@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-bg-base text-text-body;
+    scroll-behavior: smooth;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-bg-surface;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border-subtle rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-purple;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* ── Modern card ─────────────────────────────────────────────────────────── */
+  .card {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    /* gradient border via background-clip trick */
+    background:
+      linear-gradient(155deg, #222229 0%, #18181e 100%) padding-box,
+      linear-gradient(155deg, rgba(139,92,246,0.28) 0%, rgba(45,45,53,0.55) 45%, rgba(109,40,217,0.07) 100%) border-box;
+    border: 1px solid transparent;
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+    transition: box-shadow 0.22s ease, transform 0.22s ease;
+  }
+
+  .card:hover {
+    box-shadow:
+      0 0 0 1px rgba(139,92,246,0.12),
+      0 14px 44px rgba(0,0,0,0.55),
+      inset 0 1px 0 rgba(139,92,246,0.1);
+    transform: translateY(-1px);
+  }
+
+  /* thin purple accent bar at top of each card */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, rgba(139,92,246,0.6), rgba(167,139,250,0.3), transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Code editor ─────────────────────────────────────────────────────────── */
+  .code-editor {
+    @apply font-mono text-sm bg-bg-base text-green-400 p-4 rounded-xl border border-border-subtle resize-none outline-none w-full;
+    min-height: 200px;
+  }
+
+  .code-editor:focus {
+    @apply border-purple;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.18);
+  }
+
+  /* ── Glow helpers ─────────────────────────────────────────────────────────── */
+  .glow-purple {
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.3);
+  }
+}
