@@ -6,7 +6,7 @@ export function AboutPage() {
   return (
     <div>
       <ThreeHero />
-      <PageWrapper className="space-y-16">
+      <PageWrapper className="!pt-4 space-y-16">
         <AboutSections />
       </PageWrapper>
     </div>

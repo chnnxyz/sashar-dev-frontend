@@ -78,4 +78,14 @@
   .glow-purple {
     text-shadow: 0 0 20px rgba(139, 92, 246, 0.6), 0 0 40px rgba(139, 92, 246, 0.3);
   }
+
+  /* ── Hero entrance animations ────────────────────────────────────────────── */
+  @keyframes hero-fadein {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-fadein {
+    animation: hero-fadein 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
 }

@@ -3,27 +3,27 @@ import { Card } from '../shared/Card'
 const sections = [
   {
     title: 'Who I Am',
-    content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.`,
+    content: `I'm Sasha Ruiz de Aguirre, 33, based in Guadalajara, Mexico. Physicist by training, engineer by trade. I've spent the last decade building ML systems and backend infrastructure across industries ranging from fintech and e-commerce to industrial IoT and gaming. Outside of work I produce music, DJ, and shoot photography; I find these creative disciplines feed back into how I approach technical problems.`,
   },
   {
     title: 'What I Do',
-    content: `Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.`,
+    content: `I build production ML and backend services: recommendation engines, time series forecasting pipelines, anomaly detection, LLM applications, and fuzzy logic controllers for industrial automation. On the backend side I design microservice architectures in Go and Elixir. For large-scale distributed workloads I reach for Spark and Kubernetes.`,
   },
   {
     title: 'My Approach',
-    content: `Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.`,
+    content: `A physics background rewired how I approach problems: model the system first, identify the real constraints, then find the most direct path to a solution. I tend to iterate quickly, borrow ideas from adjacent fields, and question assumptions that get treated as fixed. Strong fundamentals usually mean finding faster, cleaner paths through complexity.`,
   },
   {
     title: 'Current Focus',
-    content: `Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est.`,
+    content: `At Udemy I'm building behavior-based promotion and recommendation systems using deep reinforcement learning. At Sistemas Agaricus I'm working on backend architecture for web and mobile products. On the data side I handle database migrations and real-time model training pipelines. Outside of work I'm exploring systems programming, IoT, electronics, and game development.`,
   },
 ]
 
 const skills = [
-  { category: 'ML / AI', items: ['Python', 'PyTorch', 'scikit-learn', 'XGBoost', 'LightGBM', 'Transformers'] },
-  { category: 'Backend', items: ['FastAPI', 'GraphQL', 'PostgreSQL', 'Redis', 'Docker', 'Kubernetes'] },
-  { category: 'Frontend', items: ['React', 'TypeScript', 'D3.js', 'Three.js', 'Tailwind CSS'] },
-  { category: 'Cloud', items: ['AWS', 'GCP', 'MLflow', 'Airflow', 'Terraform'] },
+  { category: 'ML / AI', items: ['Python', 'PyTorch', 'scikit-learn', 'Deep RL', 'LLMs', 'Time Series'] },
+  { category: 'Backend', items: ['Go', 'Elixir', 'gRPC / GraphQL', 'FastAPI', '.NET', 'PostgreSQL / MongoDB / Redis'] },
+  { category: 'Data', items: ['Spark / PySpark', 'ETL', 'Anomaly Detection', 'Forecasting', 'Query Optimization', 'R'] },
+  { category: 'Cloud & Tools', items: ['AWS', 'Azure', 'Docker', 'Kubernetes', 'CI/CD', 'Git'] },
 ]
 
 export function AboutSections() {

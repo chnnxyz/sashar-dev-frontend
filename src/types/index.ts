@@ -4,21 +4,28 @@ export interface ScatterPoint {
   x: number
   y: number
   label?: string
+  isTrain?: boolean
+  features?: Record<string, number>
+  correct?: boolean
+  predictedLabel?: string
+  predictedProb?: number
+  realValue?: number
 }
 
 export interface TimeSeriesPoint {
   date: Date
   value: number
+  predicted?: number
 }
 
 // ─── ML Models ────────────────────────────────────────────────────────────────
 
 export type MLTask = 'regression' | 'classification' | 'clustering'
 
-export type RegressionModel = 'elasticnet' | 'lightgbm' | 'nn'
+export type RegressionModel = 'elasticnet' | 'lightgbm' | 'mlp'
 export type ClassificationModel = 'logistic_regression' | 'svm' | 'lightgbm'
 export type ClusteringModel = 'kmeans' | 'dbscan'
-export type TSModel = 'xgboost' | 'croston' | 'rnn'
+export type TSModel = 'lightgbm' | 'tes' | 'rnn'
 
 export interface HyperparameterDef {
   name: string
@@ -74,6 +81,7 @@ export interface RunMLParams {
 export interface RunTSParams {
   model: TSModel
   hyperparameters: HyperparameterValues
+  dataset?: string
 }
 
 export interface OptimizeParams {
@@ -95,6 +103,24 @@ export interface RESTRequest {
   body?: Record<string, unknown>
 }
 
+// ─── Optimization streaming ───────────────────────────────────────────────────
+
+export interface OptimizationIteration {
+  iteration: number
+  rmse: number
+  params: Record<string, number>
+}
+
+// ─── CV metrics ───────────────────────────────────────────────────────────────
+
+export interface CVMetrics {
+  trainRMSE: number
+  testRMSE: number
+  trainSize: number
+  testSize: number
+  cvFolds: number[]
+}
+
 // ─── WebSocket ────────────────────────────────────────────────────────────────
 
 export type WSStatus = 'connecting' | 'open' | 'closed' | 'error'
@@ -110,7 +136,7 @@ export interface WSMessage {
 
 export interface EndpointParam {
   name: string
-  type: 'string' | 'number' | 'boolean'
+  type: 'string' | 'number' | 'boolean' | 'integer'
   required: boolean
   description: string
   defaultValue?: string | number | boolean
@@ -123,4 +149,68 @@ export interface RESTEndpointDef {
   path: string
   description: string
   params: EndpointParam[]
+}
+
+// ─── Datasets ─────────────────────────────────────────────────────────────────
+
+export type DatasetType = 'classification' | 'regression' | 'clustering' | 'timeseries'
+
+export interface Dataset {
+  id: string
+  name: string
+  type: DatasetType
+  description: string
+  rows: number
+  features: string[]
+}
+
+// ─── Model definitions ────────────────────────────────────────────────────────
+
+export interface ModelDefinition {
+  id: string
+  name: string
+  type: string
+  description: string
+}
+
+// ─── GraphQL docs sidebar ─────────────────────────────────────────────────────
+
+export interface GraphQLDocArg {
+  name: string
+  type: string
+  required: boolean
+  description?: string
+  values?: string[]
+}
+
+export interface GraphQLDoc {
+  name: string
+  kind: 'query' | 'mutation'
+  args: GraphQLDocArg[]
+  description: string
+  exampleQuery: string
+}
+
+// ─── LLM pipeline ─────────────────────────────────────────────────────────────
+
+export interface TokenizeResult {
+  tokens: string[]
+}
+
+export interface EncodeResult {
+  ids: number[]
+}
+
+export interface EmbedResultPoint {
+  x: number
+  y: number
+  label: string
+}
+
+export interface EmbedResult {
+  points: EmbedResultPoint[]
+}
+
+export interface GenerateResult {
+  outputTokens: string[]
 }

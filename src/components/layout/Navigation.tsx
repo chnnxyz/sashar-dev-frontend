@@ -4,7 +4,7 @@ const navItems = [
   { path: '/', label: 'About' },
   { path: '/cv', label: 'CV' },
   { path: '/ml', label: 'ML Playground' },
-  { path: '/timeseries', label: 'Time Series' },
+  { path: '/llms', label: 'LLMs' },
   { path: '/backend', label: 'Backend' },
 ]
 
