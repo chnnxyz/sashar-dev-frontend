@@ -417,7 +417,12 @@ export function MLPage() {
               <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2.5l11 5.5-11 5.5V2.5z" /></svg>
               {tab === 'timeseries' ? 'Run Forecast' : 'Run Model'}
             </Button>
-            <OptimizePanel hyperparamDefs={currentDefs} onApply={params => setHyperparams(params)} />
+            <OptimizePanel
+              hyperparamDefs={currentDefs}
+              onApply={params => setHyperparams(params)}
+              task={tab === 'timeseries' ? 'timeseries' : (tab as MLTask)}
+              model={tab === 'regression' ? regModel : tab === 'classification' ? clsModel : tab === 'clustering' ? cluModel : tsModel}
+            />
           </div>
         </div>
       </div>

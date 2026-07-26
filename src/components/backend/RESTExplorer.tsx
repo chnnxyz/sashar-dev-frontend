@@ -35,8 +35,12 @@ function EndpointCard({ endpoint }: { endpoint: RESTEndpointDef }) {
       const bodyParams = Object.fromEntries(
         endpoint.params.filter(p => p.location === 'body').map(p => [p.name, paramValues[p.name] ?? ''])
       )
+      // Substitute path params (e.g. /cv/:section → /cv/experience) into the URL.
+      const resolvedPath = endpoint.params
+        .filter(p => p.location === 'path')
+        .reduce((path, p) => path.replace(`:${p.name}`, encodeURIComponent(paramValues[p.name] ?? '')), endpoint.path)
       const result = await backendApi.executeREST({
-        endpoint: endpoint.path,
+        endpoint: resolvedPath,
         method: endpoint.method,
         params: queryParams,
         body: Object.keys(bodyParams).length > 0 ? bodyParams : undefined,

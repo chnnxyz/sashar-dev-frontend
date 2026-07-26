@@ -174,7 +174,7 @@ export function TimeSeriesPage() {
               <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2.5l11 5.5-11 5.5V2.5z" /></svg>
               Run Forecast
             </Button>
-            <OptimizePanel hyperparamDefs={currentDefs} onApply={params => setHyperparams(params)} />
+            <OptimizePanel hyperparamDefs={currentDefs} onApply={params => setHyperparams(params)} task="timeseries" model={model} />
           </div>
         </div>
       </div>

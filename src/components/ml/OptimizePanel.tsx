@@ -4,7 +4,8 @@ import { NumberInput } from '../shared/NumberInput'
 import { SubNavTabs } from '../shared/SubNavTabs'
 import { OptimizationProgress } from '../shared/OptimizationProgress'
 import { simulateOptimizationStream } from '../../data/mockData'
-import type { OptimizeMethod, HyperparameterDef, HyperparameterValues, OptimizationIteration } from '../../types'
+import { openOptimizeStream } from '../../api/api'
+import type { OptimizeMethod, HyperparameterDef, HyperparameterValues, OptimizationIteration, MLTask, OptimizeParams } from '../../types'
 
 type Phase = 'config' | 'running' | 'complete'
 
@@ -15,6 +16,10 @@ interface SearchBound {
 interface OptimizePanelProps {
   hyperparamDefs: HyperparameterDef[]
   onApply: (params: HyperparameterValues) => void
+  // When provided, optimization runs against the real backend via WebSocket
+  // (/ml/v1/ws/optimize); otherwise it falls back to the client-side simulation.
+  task?: MLTask | 'timeseries'
+  model?: string
 }
 
 const methodTabs = [
@@ -33,7 +38,7 @@ function defaultBound(def: HyperparameterDef): SearchBound {
   }
 }
 
-export function OptimizePanel({ hyperparamDefs, onApply }: OptimizePanelProps) {
+export function OptimizePanel({ hyperparamDefs, onApply, task, model }: OptimizePanelProps) {
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<Phase>('config')
   const [method, setMethod] = useState<OptimizeMethod>('gridsearch')
@@ -71,10 +76,36 @@ export function OptimizePanel({ hyperparamDefs, onApply }: OptimizePanelProps) {
     setPhase('running')
     setStreaming(true)
 
+    // Real backend path: stream trials over WebSocket when we know task + model.
+    if (task && model) {
+      const boundsFor = (fn: (b: SearchBound) => Record<string, number>) =>
+        hyperparamDefs.map(d => ({ param: d.name, ...fn(bounds[d.name] ?? defaultBound(d)) }))
+      const config: Record<string, unknown> =
+        method === 'gridsearch'
+          ? { bounds: boundsFor(b => ({ min: b.min, max: b.max, step: b.step })) }
+          : method === 'tpe'
+            ? { n_trials: nTrials, n_startup_trials: nStartup, bounds: boundsFor(b => ({ min: b.low, max: b.high })) }
+            : {
+                population_size: popSize, n_generations: nGenerations,
+                mutation_rate: mutationRate, crossover_rate: crossoverRate,
+                bounds: boundsFor(b => ({ min: b.min, max: b.max })),
+              }
+
+      streamCleanup.current = openOptimizeStream(
+        { task, model, method, config } as unknown as OptimizeParams,
+        {
+          onIteration: iter => setIterations(prev => [...prev, iter]),
+          onComplete: () => { setStreaming(false); setPhase('complete') },
+          onError: () => { setStreaming(false); setPhase('complete') },
+        },
+      )
+      return
+    }
+
+    // Fallback: client-side simulation (no task/model supplied).
     const n = method === 'tpe' ? Math.min(nTrials, 55)
       : method === 'genetic' ? Math.min(nGenerations * 2, 55)
       : 40
-
     streamCleanup.current = simulateOptimizationStream(
       hyperparamDefs, n,
       iter => setIterations(prev => [...prev, iter]),
@@ -233,7 +264,7 @@ export function OptimizePanel({ hyperparamDefs, onApply }: OptimizePanelProps) {
             <div className="flex justify-end gap-3 px-5 py-4 border-t border-border-subtle flex-shrink-0">
               <Button variant="ghost" onClick={handleClose}>{phase === 'complete' ? 'Close' : 'Cancel'}</Button>
               {phase === 'config' && <Button onClick={handleRun}>Run Optimization →</Button>}
-              {phase === 'complete' && <Button onClick={handleApply}>Apply Best Params</Button>}
+              {phase === 'complete' && best && <Button onClick={handleApply}>Apply Best Params</Button>}
             </div>
           </div>
         </div>

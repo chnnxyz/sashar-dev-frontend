@@ -76,6 +76,8 @@ export interface RunMLParams {
   task: MLTask
   model: string
   hyperparameters: HyperparameterValues
+  dataset?: string
+  seed?: number
 }
 
 export interface RunTSParams {
@@ -213,4 +215,18 @@ export interface EmbedResult {
 
 export interface GenerateResult {
   outputTokens: string[]
+  outputIds?: number[]
+  outputPoints?: EmbedResultPoint[]
+}
+
+export interface ClusterGroup {
+  id: number
+  tokens: string[]
+  description: string
+}
+
+export interface ClusterResult {
+  nGroups: number
+  groups: ClusterGroup[]
+  assignments: number[]
 }
