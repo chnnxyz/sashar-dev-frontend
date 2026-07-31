@@ -72,7 +72,7 @@ export function CVMetricsCard({ cv, mode }: CVMetricsCardProps) {
                 style={{ height: `${barH}px`, backgroundColor: foldColor(v, foldMin, foldMax) }}
                 title={`Fold ${i + 1}: ${v.toFixed(4)}`}
               >
-                <span className="text-[9px] font-mono leading-none select-none" style={{ color: textColor }}>
+                <span className="text-[10px] font-mono leading-none select-none" style={{ color: textColor }}>
                   {v.toFixed(3)}
                 </span>
               </div>

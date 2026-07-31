@@ -14,16 +14,7 @@ export function GitHubRepoLink({ repo }: GitHubRepoLinkProps) {
       href={`https://github.com/${repo}`}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-1.5 text-xs tracking-widest uppercase font-medium"
-      style={{ color: '#6b7280', transition: 'color 200ms, text-shadow 200ms' }}
-      onMouseEnter={e => {
-        e.currentTarget.style.color = '#c4b5fd'
-        e.currentTarget.style.textShadow = '0 0 12px rgba(167,139,250,0.8), 0 0 30px rgba(139,92,246,0.5)'
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.color = '#6b7280'
-        e.currentTarget.style.textShadow = 'none'
-      }}
+      className="text-glow-hover inline-flex items-center gap-1.5 text-xs font-mono lowercase text-text-muted/60 hover:text-purple-light transition-colors duration-200"
     >
       {GH_ICON}
       {repo}

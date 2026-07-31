@@ -36,9 +36,7 @@ export function BackendPage() {
           <div className="mb-6 flex items-start justify-between gap-4">
             <div>
               <div className="flex items-baseline gap-4 mb-1">
-                <h1 className="text-2xl font-bold text-text-body">
-                  Backend <span className="text-purple-light">Playground</span>
-                </h1>
+                <h1 className="text-2xl font-bold text-purple-light">Backend Playground</h1>
                 <GitHubRepoLink repo={tab === 'graphql' ? 'chnnxyz/sashar-dev-gql-api' : 'chnnxyz/sashar-dev-rest-api'} />
               </div>
               <p className="text-sm text-text-muted">Explore this site via GraphQL queries or REST endpoints backed by a live Go API.</p>
@@ -52,7 +50,7 @@ export function BackendPage() {
               <button
                 onClick={() => setSidebarOpen(v => !v)}
                 className={[
-                  'shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors cursor-pointer mt-1',
+                  'shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-sm border transition-colors cursor-pointer mt-1',
                   sidebarOpen
                     ? 'bg-purple/20 border-purple/40 text-purple-light'
                     : 'border-border-subtle text-text-muted hover:text-purple-light hover:border-purple/40',
@@ -71,7 +69,7 @@ export function BackendPage() {
           <div className="mt-6">
             {tab === 'graphql' && (
               <>
-                <div className="mb-3 flex items-center gap-3 bg-bg-surface border border-border-subtle rounded-lg px-4 py-2.5">
+                <div className="mb-3 flex items-center gap-3 bg-bg-surface border border-border-subtle rounded-sm px-4 py-2.5">
                   <span className="text-xs font-mono text-text-muted">Endpoint:</span>
                   <span className="text-xs font-mono text-purple-light">{GQL_PROD_URL}</span>
                 </div>
@@ -82,7 +80,7 @@ export function BackendPage() {
             )}
             {tab === 'rest' && (
               <div className="space-y-4">
-                <div className="bg-bg-surface border border-border-subtle rounded-lg px-4 py-3 flex items-center gap-3">
+                <div className="bg-bg-surface border border-border-subtle rounded-sm px-4 py-3 flex items-center gap-3">
                   <span className="text-xs font-mono text-text-muted">Base URL:</span>
                   <span className="text-xs font-mono text-purple-light">{REST_PROD_URL}</span>
                 </div>

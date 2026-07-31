@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '../shared/Button'
+import { Card } from '../shared/Card'
 import { NumberInput } from '../shared/NumberInput'
 import { SubNavTabs } from '../shared/SubNavTabs'
 import { OptimizationProgress } from '../shared/OptimizationProgress'
@@ -7,7 +8,7 @@ import { simulateOptimizationStream } from '../../data/mockData'
 import { openOptimizeStream } from '../../api/api'
 import type { OptimizeMethod, HyperparameterDef, HyperparameterValues, OptimizationIteration, MLTask, OptimizeParams } from '../../types'
 
-type Phase = 'config' | 'running' | 'complete'
+type Phase = 'config' | 'running' | 'complete' | 'error'
 
 interface SearchBound {
   min: number; max: number; step: number; low: number; high: number
@@ -96,7 +97,7 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
         {
           onIteration: iter => setIterations(prev => [...prev, iter]),
           onComplete: () => { setStreaming(false); setPhase('complete') },
-          onError: () => { setStreaming(false); setPhase('complete') },
+          onError: () => { setStreaming(false); setPhase('error') },
         },
       )
       return
@@ -121,6 +122,13 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
     setIterations([])
     setStreaming(false)
   }
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') handleClose() }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleApply = () => {
     const best = iterations.reduce((a, b) => a.rmse < b.rmse ? a : b)
@@ -151,12 +159,15 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={handleClose}>
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="optimize-panel-title"
             className="bg-bg-card border border-border-subtle rounded-xl w-full max-w-2xl max-h-[85vh] flex flex-col shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             {/* Header — always visible */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle flex-shrink-0">
-              <h3 className="font-semibold text-text-body">Optimize Hyperparameters</h3>
+              <h3 id="optimize-panel-title" className="font-semibold text-text-body">Optimize Hyperparameters</h3>
               <button onClick={handleClose} className="text-text-muted hover:text-text-body transition-colors cursor-pointer">
                 <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
@@ -202,7 +213,7 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
                     </p>
                     <div className="space-y-3">
                       {hyperparamDefs.map(def => (
-                        <div key={def.name} className="bg-bg-base rounded-lg p-3">
+                        <Card key={def.name} static innerClassName="p-3">
                           <p className="text-xs text-purple-light font-medium mb-2">{def.label}</p>
                           <div className="grid grid-cols-3 gap-2">
                             {method === 'gridsearch' ? (
@@ -218,16 +229,16 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
                               </>
                             )}
                           </div>
-                        </div>
+                        </Card>
                       ))}
                     </div>
                   </div>
                 </>
               )}
 
-              {(phase === 'running' || phase === 'complete') && (
+              {(phase === 'running' || phase === 'complete' || phase === 'error') && (
                 <>
-                  <div className="bg-bg-base rounded-lg p-3">
+                  <Card static innerClassName="p-3">
                     <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest mb-2">Search Space</p>
                     <div className="flex flex-wrap gap-x-5 gap-y-1.5">
                       {searchSpaceSummary.map(s => (
@@ -237,9 +248,15 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </Card>
 
-                  <OptimizationProgress iterations={iterations} streaming={streaming} method={method} />
+                  <OptimizationProgress iterations={iterations} streaming={streaming} method={method} error={phase === 'error'} />
+
+                  {phase === 'error' && (
+                    <div className="bg-rose-950/30 border border-rose-800/40 rounded-lg p-3">
+                      <p className="text-xs text-rose-400">Optimization failed — check the ML service and try again.</p>
+                    </div>
+                  )}
 
                   {phase === 'complete' && best && (
                     <div className="bg-emerald-950/30 border border-emerald-800/40 rounded-lg p-3">
@@ -262,8 +279,9 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
 
             {/* Footer — always visible */}
             <div className="flex justify-end gap-3 px-5 py-4 border-t border-border-subtle flex-shrink-0">
-              <Button variant="ghost" onClick={handleClose}>{phase === 'complete' ? 'Close' : 'Cancel'}</Button>
+              <Button variant="ghost" onClick={handleClose}>{phase === 'complete' || phase === 'error' ? 'Close' : 'Cancel'}</Button>
               {phase === 'config' && <Button onClick={handleRun}>Run Optimization →</Button>}
+              {phase === 'error' && <Button variant="secondary" onClick={() => setPhase('config')}>Try Again</Button>}
               {phase === 'complete' && best && <Button onClick={handleApply}>Apply Best Params</Button>}
             </div>
           </div>

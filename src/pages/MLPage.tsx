@@ -53,23 +53,23 @@ const tsModelOptions = [
 
 const aboutModels: Record<MLTab, Array<{ name: string; desc: string }>> = {
   regression: [
-    { name: 'ElasticNet', desc: 'Linear model combining L1 and L2 regularization. Robust for high-dimensional sparse data and collinear features.' },
-    { name: 'LightGBM', desc: 'Gradient boosted decision trees with leaf-wise growth. Efficient on large datasets; strong baseline for tabular regression.' },
-    { name: 'Multi-Layer Perceptron', desc: 'Fully connected feedforward network (PyTorch). Flexible universal approximator suited for non-linear relationships.' },
+    { name: 'ElasticNet', desc: 'Linear regression with L1+L2 regularization — my default first pass on any small-to-medium tabular set. Cheap to fit, and the coefficients actually tell you something.' },
+    { name: 'LightGBM', desc: 'Leaf-wise gradient boosting. Usually wins on this dataset; the tradeoff is you lose the coefficient-level interpretability ElasticNet gives you for free.' },
+    { name: 'Multi-Layer Perceptron', desc: 'A plain feedforward net in PyTorch, capped at 50 epochs on this box (no GPU here). Worth trying when the relationship clearly isn’t linear — otherwise it’s usually not worth the training time.' },
   ],
   classification: [
-    { name: 'Logistic Regression', desc: 'Linear probabilistic classifier. Fast, interpretable, and a strong baseline for binary and multiclass tasks.' },
-    { name: 'SVM', desc: 'Support Vector Machine with kernel trick. Effective in high-dimensional spaces with a clear margin of separation.' },
-    { name: 'LightGBM', desc: 'Gradient boosted trees optimized for classification. Excellent accuracy with low memory footprint and fast inference.' },
+    { name: 'Logistic Regression', desc: 'Still the first thing I reach for on a binary/multiclass problem. Boring, fast, and the decision boundary is easy to reason about.' },
+    { name: 'SVM', desc: 'The kernel trick handles non-linear boundaries well, though it gets slow past a few thousand rows — fine here, would reconsider at scale.' },
+    { name: 'LightGBM', desc: 'Same boosted-tree engine as the regression tab, tuned for classification. Tends to edge out logistic regression on accuracy at the cost of a black-box decision boundary.' },
   ],
   clustering: [
-    { name: 'K-Means', desc: 'Centroid-based partitioning into k clusters. Simple, fast, and effective when clusters are roughly spherical.' },
-    { name: 'DBSCAN', desc: 'Density-based clustering that discovers arbitrary shapes and marks low-density points as noise/outliers.' },
+    { name: 'K-Means', desc: 'Centroid-based, assumes roughly spherical clusters. Fast and a reasonable first guess — the real work is picking k.' },
+    { name: 'DBSCAN', desc: 'Density-based instead of centroid-based, so it finds irregular cluster shapes and actually flags outliers rather than forcing every point into a group.' },
   ],
   timeseries: [
-    { name: 'LightGBM', desc: 'Gradient boosted trees adapted for time series via lag features and rolling window statistics. Efficient on large datasets with strong baseline accuracy.' },
-    { name: 'Triple Exp. Smoothing', desc: 'Holt-Winters method that models level, trend, and seasonality with separate smoothing parameters. Interpretable and effective for seasonal time series.' },
-    { name: 'GRU (RNN)', desc: 'Gated Recurrent Unit network (PyTorch) that captures long-range temporal dependencies across a sliding input window.' },
+    { name: 'LightGBM', desc: 'Same boosting engine again, this time fed lag features and rolling stats instead of raw time. Treats forecasting as a regression problem, which works better than it should.' },
+    { name: 'Triple Exp. Smoothing', desc: 'Classic Holt-Winters: separate smoothing terms for level, trend, and seasonality. No neural net required, and for a lot of seasonal series it’s hard to beat.' },
+    { name: 'GRU (RNN)', desc: 'Recurrent net (PyTorch) over a sliding window. Can pick up longer-range temporal patterns the other two miss, but needs more data to be worth it.' },
   ],
 }
 
@@ -112,6 +112,7 @@ export function MLPage() {
   const [metrics, setMetrics] = useState<Record<string, number> | null>(null)
   const [cvMetrics, setCvMetrics] = useState<CVMetrics | null>(null)
   const [runLoading, setRunLoading] = useState(false)
+  const [runError, setRunError] = useState<string | null>(null)
   const [splitSeed, setSplitSeed] = useState(13)
   const [hpSeed, setHpSeed] = useState(42)
 
@@ -168,7 +169,7 @@ export function MLPage() {
   // Reset on tab or ML-model change
   useEffect(() => {
     setHyperparams(Object.fromEntries(currentDefs.map(d => [d.name, d.defaultValue])))
-    setMetrics(null); setCvMetrics(null); setPredictions(null)
+    setMetrics(null); setCvMetrics(null); setPredictions(null); setRunError(null)
     if (tab === 'timeseries') {
       setHistorical(timeSeriesData); setForecast([])
     } else {
@@ -184,27 +185,27 @@ export function MLPage() {
   useEffect(() => {
     if (tab !== 'timeseries') return
     setHyperparams(Object.fromEntries(tsHyperparams[tsModel].map(d => [d.name, d.defaultValue])))
-    setMetrics(null); setCvMetrics(null); setForecast([])
+    setMetrics(null); setCvMetrics(null); setForecast([]); setRunError(null)
   }, [tsModel, tab]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Dataset-switch effects — tab guard prevents wrong effect winning on mount
   useEffect(() => {
     if (tab !== 'regression') return
     setScatterData(DATASET_BASE_DATA[regDataset] ?? regressionScatterData)
-    setMetrics(null); setCvMetrics(null); setPredictions(null)
+    setMetrics(null); setCvMetrics(null); setPredictions(null); setRunError(null)
     setXFeature(regDataset === 'diabetes' ? 'BMI' : 'MedInc')
   }, [regDataset, tab]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (tab !== 'classification') return
     setScatterData(DATASET_BASE_DATA[clsDataset] ?? classificationScatterData)
-    setMetrics(null); setCvMetrics(null); setPredictions(null)
+    setMetrics(null); setCvMetrics(null); setPredictions(null); setRunError(null)
   }, [clsDataset, tab]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (tab !== 'clustering') return
     setScatterData(DATASET_BASE_DATA[cluDataset] ?? clusteringBaseData)
-    setMetrics(null); setCvMetrics(null); setPredictions(null)
+    setMetrics(null); setCvMetrics(null); setPredictions(null); setRunError(null)
   }, [cluDataset, tab]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const taggedData = useMemo(() => applySeededSplit(scatterData, splitSeed), [scatterData, splitSeed])
@@ -227,6 +228,7 @@ export function MLPage() {
 
   const handleRun = async () => {
     setRunLoading(true)
+    setRunError(null)
     try {
       if (tab === 'timeseries') {
         const result = await tsApi.runForecast({ model: tsModel, hyperparameters: hyperparams, dataset: tsDataset })
@@ -246,6 +248,8 @@ export function MLPage() {
         setCvMetrics(result.cv)
         setPredictions(result.testPredictions ?? null)
       }
+    } catch {
+      setRunError('Run failed — the ML service may be unavailable. Try again.')
     } finally {
       setRunLoading(false)
     }
@@ -281,7 +285,7 @@ export function MLPage() {
     <PageWrapper>
       <div className="mb-6">
         <div className="flex items-baseline gap-4 mb-1">
-          <h1 className="text-2xl font-bold text-text-body">Machine Learning <span className="text-purple-light">Playground</span></h1>
+          <h1 className="text-2xl font-bold text-purple-light">Machine Learning Playground</h1>
           <GitHubRepoLink repo="chnnxyz/sashar-dev-ml-api" />
         </div>
         <p className="text-sm text-text-muted">
@@ -340,15 +344,14 @@ export function MLPage() {
                     {tab === 'classification' && <DatasetSelector datasets={clsDatasets} value={clsDataset} onChange={setClsDataset} />}
                   </div>
                   <label className="flex flex-col gap-1.5 shrink-0">
-                    <span className="text-[10px] text-text-muted font-semibold uppercase tracking-widest">Split Seed</span>
+                    <span className="text-xs text-text-muted font-medium">Split Seed</span>
                     <div className="flex items-center gap-1">
                       <input
                         type="number"
                         value={splitSeed}
                         onChange={e => setSplitSeed(Math.max(1, parseInt(e.target.value) || 1))}
                         min={1}
-                        className="w-16 bg-bg-base/80 border border-border-subtle rounded-lg px-2 py-2 text-sm text-text-body font-mono focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                        style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}
+                        className="w-16 bg-bg-base/80 border border-border-subtle rounded-sm px-2 py-2 text-sm text-text-body font-mono focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none shadow-inset-field"
                       />
                       <button
                         onClick={() => setSplitSeed(Math.floor(Math.random() * 999) + 1)}
@@ -374,13 +377,12 @@ export function MLPage() {
 
               {tab === 'regression' && (
                 <label className="flex flex-col gap-1.5">
-                  <span className="text-[10px] text-text-muted font-semibold uppercase tracking-widest">X Axis Feature</span>
+                  <span className="text-xs text-text-muted font-medium">X Axis Feature</span>
                   <div className="relative">
                     <select
                       value={xFeature}
                       onChange={e => setXFeature(e.target.value)}
-                      className="w-full appearance-none bg-bg-base/80 border border-border-subtle rounded-lg px-3 py-2 text-sm text-text-body focus:outline-none focus:border-purple focus:ring-1 focus:ring-purple/30 transition-all duration-150 cursor-pointer pr-8"
-                      style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}
+                      className="w-full appearance-none bg-bg-base/80 border border-border-subtle rounded-sm px-3 py-2 text-sm text-text-body focus:outline-none focus:border-purple focus:ring-1 focus:ring-purple/30 transition duration-150 cursor-pointer pr-8 shadow-inset-field"
                     >
                       {currentRegFeatures.map(f => (
                         <option key={f.key} value={f.key} className="bg-bg-card">{f.label}</option>
@@ -417,6 +419,11 @@ export function MLPage() {
               <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2.5l11 5.5-11 5.5V2.5z" /></svg>
               {tab === 'timeseries' ? 'Run Forecast' : 'Run Model'}
             </Button>
+            {runError && (
+              <div className="bg-rose-950/30 border border-rose-800/40 rounded-lg px-3 py-2">
+                <p className="text-xs text-rose-400">{runError}</p>
+              </div>
+            )}
             <OptimizePanel
               hyperparamDefs={currentDefs}
               onApply={params => setHyperparams(params)}

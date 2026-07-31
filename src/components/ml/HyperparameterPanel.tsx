@@ -26,19 +26,18 @@ export function HyperparameterPanel({ defs, values, onChange, seed, onSeedChange
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs text-text-muted font-medium uppercase tracking-wide">Hyperparameters</p>
         <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-text-muted font-semibold uppercase tracking-widest">Seed</span>
+          <span className="text-xs text-text-muted font-medium">Seed</span>
           <input
             type="number"
             value={seed}
             onChange={e => onSeedChange(Math.max(1, parseInt(e.target.value) || 1))}
             min={1}
-            className="w-14 bg-bg-base/80 border border-border-subtle rounded-lg px-2 py-1 text-xs text-text-body font-mono focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-            style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}
+            className="w-14 bg-bg-base/80 border border-border-subtle rounded-sm px-2 py-1 text-xs text-text-body font-mono focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none shadow-inset-field"
           />
           <button
             onClick={() => onSeedChange(Math.floor(Math.random() * 999) + 1)}
             title="Random seed"
-            className="p-1 rounded text-text-muted hover:text-purple-light transition-colors cursor-pointer"
+            className="p-1 rounded text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.8}>
               <path d="M1 8A7 7 0 1 1 8 15" strokeLinecap="round"/>

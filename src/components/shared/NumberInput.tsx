@@ -37,7 +37,7 @@ export function NumberInput({ label, value, onChange, invalid, className = '', .
 
   return (
     <label className={['flex flex-col gap-1.5', className].join(' ')}>
-      <span className="text-[10px] text-text-muted font-semibold uppercase tracking-widest leading-tight min-h-[2.5em] flex items-end break-words">{label}</span>
+      <span className="text-xs text-text-muted font-medium leading-tight min-h-[2.5em] flex items-end break-words">{label}</span>
       <input
         type="number"
         value={displayValue}
@@ -45,12 +45,11 @@ export function NumberInput({ label, value, onChange, invalid, className = '', .
         onFocus={handleFocus}
         onBlur={handleBlur}
         className={[
-          'w-full bg-bg-base/80 rounded-lg px-3 py-2 text-sm text-text-body placeholder-text-muted',
-          'border focus:outline-none transition-all duration-150',
+          'w-full bg-bg-base/80 rounded-sm px-3 py-2 text-sm text-text-body placeholder-text-muted',
+          'border focus:outline-none transition duration-150 shadow-inset-field',
           '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none',
           borderClass,
         ].join(' ')}
-        style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}
         {...props}
       />
     </label>

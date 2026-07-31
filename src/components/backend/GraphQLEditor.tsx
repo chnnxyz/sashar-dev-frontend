@@ -13,13 +13,21 @@ export function GraphQLEditor({ query, onQueryChange }: GraphQLEditorProps) {
   const [loading, setLoading] = useState(false)
   const [showVars, setShowVars] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [varsError, setVarsError] = useState<string | null>(null)
 
   const handleRun = async () => {
+    let parsedVars: Record<string, unknown> = {}
+    try {
+      parsedVars = JSON.parse(variables)
+    } catch {
+      setVarsError('Invalid JSON in variables')
+      setShowVars(true)
+      return
+    }
+    setVarsError(null)
     setLoading(true)
     setError(null)
     try {
-      let parsedVars: Record<string, unknown> = {}
-      try { parsedVars = JSON.parse(variables) } catch { /* ignore */ }
       const result = await backendApi.executeGraphQL({ query, variables: parsedVars })
       setResponse(JSON.stringify(result, null, 2))
     } catch (err) {
@@ -62,17 +70,19 @@ export function GraphQLEditor({ query, onQueryChange }: GraphQLEditorProps) {
             <span className="text-xs text-text-muted font-medium uppercase tracking-wide">Variables (JSON)</span>
             <textarea
               value={variables}
-              onChange={e => setVariables(e.target.value)}
-              className="code-editor"
+              onChange={e => { setVariables(e.target.value); setVarsError(null) }}
+              className={['code-editor', varsError ? 'border-rose-500/50 focus:border-rose-500/70' : ''].join(' ')}
               style={{ minHeight: '80px' }}
               spellCheck={false}
               placeholder="{}"
             />
+            {varsError && <p className="text-xs text-rose-400">{varsError}</p>}
           </>
         )}
         <Button onClick={handleRun} loading={loading} className="w-full">
-          <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M3 2.5l11 5.5-11 5.5V2.5z" />
+          <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
+            <path d="M4 3l5 5-5 5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M10 13h3" strokeLinecap="round" />
           </svg>
           Run Query
         </Button>
@@ -90,7 +100,7 @@ export function GraphQLEditor({ query, onQueryChange }: GraphQLEditorProps) {
             </button>
           )}
         </div>
-        <div className="bg-bg-base border border-border-subtle rounded-lg p-4 font-mono text-sm min-h-[300px] overflow-auto">
+        <div className="bg-bg-base border border-border-subtle rounded-sm p-4 font-mono text-sm min-h-[300px] overflow-auto">
           {loading && (
             <div className="flex items-center gap-2 text-text-muted">
               <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
@@ -100,9 +110,9 @@ export function GraphQLEditor({ query, onQueryChange }: GraphQLEditorProps) {
               Executing query…
             </div>
           )}
-          {error && <pre className="text-red-400 text-xs whitespace-pre-wrap">{error}</pre>}
+          {error && <pre className="text-rose-400 text-xs whitespace-pre-wrap">{error}</pre>}
           {response && !loading && (
-            <pre className="text-green-400 text-xs whitespace-pre-wrap leading-relaxed">{response}</pre>
+            <pre className="text-emerald-400 text-xs whitespace-pre-wrap leading-relaxed">{response}</pre>
           )}
           {!response && !loading && !error && (
             <p className="text-text-muted text-xs">Run a query to see the response here.</p>

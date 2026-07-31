@@ -5,9 +5,10 @@ interface OptimizationProgressProps {
   iterations: OptimizationIteration[]
   streaming: boolean
   method: string
+  error?: boolean
 }
 
-export function OptimizationProgress({ iterations, streaming, method }: OptimizationProgressProps) {
+export function OptimizationProgress({ iterations, streaming, method, error = false }: OptimizationProgressProps) {
   const best = iterations.length > 0 ? iterations.reduce((a, b) => a.rmse < b.rmse ? a : b) : null
   const paramKeys = best ? Object.keys(best.params) : []
   const recent = [...iterations].reverse().slice(0, 8)
@@ -16,9 +17,11 @@ export function OptimizationProgress({ iterations, streaming, method }: Optimiza
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {streaming
-            ? <><span className="w-2 h-2 rounded-full bg-purple animate-pulse" /><span className="text-xs text-purple-light">Streaming — {method}</span></>
-            : <><span className="w-2 h-2 rounded-full bg-emerald-400" /><span className="text-xs text-emerald-400">Complete — {iterations.length} iterations</span></>}
+          {error
+            ? <><span className="w-2 h-2 rounded-full bg-rose-500" /><span className="text-xs text-rose-400">Failed — {iterations.length} iteration{iterations.length === 1 ? '' : 's'} before error</span></>
+            : streaming
+              ? <><span className="w-2 h-2 rounded-full bg-purple animate-pulse" /><span className="text-xs text-purple-light">Streaming — {method}</span></>
+              : <><span className="w-2 h-2 rounded-full bg-emerald-400" /><span className="text-xs text-emerald-400">Complete — {iterations.length} iterations</span></>}
         </div>
         {best && <span className="text-xs text-text-muted">best RMSE <strong className="text-emerald-400 font-mono">{best.rmse.toFixed(4)}</strong></span>}
       </div>

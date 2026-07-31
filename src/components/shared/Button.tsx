@@ -9,10 +9,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-purple hover:bg-purple-dark text-white border border-purple hover:border-purple-dark shadow-[0_0_12px_rgba(139,92,246,0.3)]',
+  primary: 'bg-purple hover:bg-purple-dark text-white border border-purple hover:border-purple-dark',
   secondary: 'bg-bg-card hover:bg-bg-surface text-text-body border border-border-subtle hover:border-purple',
   ghost: 'bg-transparent hover:bg-bg-card text-text-muted hover:text-text-body border border-transparent hover:border-border-subtle',
-  danger: 'bg-red-900/40 hover:bg-red-900/60 text-red-400 border border-red-800/50 hover:border-red-600',
+  danger: 'bg-rose-950/40 hover:bg-rose-950/60 text-rose-400 border border-rose-800/50 hover:border-rose-600',
 }
 
 const sizeClasses = {
@@ -34,7 +34,7 @@ export function Button({
     <button
       disabled={disabled ?? loading}
       className={[
-        'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
+        'inline-flex items-center justify-center gap-2 rounded-sm font-medium transition duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer',
         variantClasses[variant],
         sizeClasses[size],
         className,

@@ -15,19 +15,29 @@ interface EmbedPoint {
   color: string
 }
 
-const TOKEN_PALETTE = [
-  '#60a5fa', '#f97316', '#a3e635', '#e879f9', '#fb7185', '#2dd4bf',
-  '#fbbf24', '#a78bfa', '#34d399', '#f472b6', '#38bdf8', '#4ade80',
-]
-const OUTPUT_PALETTE = [
-  '#f59e0b', '#06b6d4', '#ec4899', '#84cc16', '#a855f7', '#14b8a6',
-  '#e11d48', '#0ea5e9', '#d946ef', '#22c55e', '#8b5cf6', '#f97316',
-]
+// Token/output/cluster chips build their background+border by suffixing hex alpha digits
+// onto the base color (see TokenChip below), so every generated color must be hex, not hsl().
+function hslToHex(h: number, s: number, l: number): string {
+  s /= 100; l /= 100
+  const k = (n: number) => (n + h / 30) % 12
+  const a = s * Math.min(l, 1 - l)
+  const f = (n: number) => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))
+  const toHex = (x: number) => Math.round(255 * x).toString(16).padStart(2, '0')
+  return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`
+}
+
+// Qualitative hue family shared by every multi-color surface on this page (token chips,
+// output chips, cluster shading, the transformer diagram) — hues stepped evenly from the
+// violet accent at a fixed saturation/lightness, so a 12-way token palette still reads as
+// one cohesive material instead of a default-Tailwind rainbow.
+const QUALITATIVE_HUES = [258, 288, 318, 348, 18, 48, 78, 108, 138, 168, 198, 228]
+const TOKEN_PALETTE = QUALITATIVE_HUES.map(h => hslToHex(h, 60, 68))
+const OUTPUT_PALETTE = QUALITATIVE_HUES.map(h => hslToHex(h, 55, 60))
 
 // One distinct base hue per cluster; tokens within a cluster get lightness shades of it.
-const CLUSTER_HUES = [210, 28, 145, 275, 340, 48, 190, 315]
+const CLUSTER_HUES = QUALITATIVE_HUES.slice(0, 8)
 const clusterHue = (groupId: number) => CLUSTER_HUES[(groupId - 1) % CLUSTER_HUES.length]!
-const clusterBaseColor = (groupId: number) => `hsl(${clusterHue(groupId)}, 68%, 62%)`
+const clusterBaseColor = (groupId: number) => hslToHex(clusterHue(groupId), 68, 62)
 
 // Map per-point cluster assignments to per-point colors: same hue per cluster,
 // varied lightness (shades) within it. Marker points (-1) stay neutral gray.
@@ -44,7 +54,7 @@ function clusterShades(assignments: number[]): string[] {
     members.forEach((pointIdx, mi) => {
       const t = members.length > 1 ? mi / (members.length - 1) : 0.5
       const light = Math.round(46 + t * 26) // 46%–72% shades of the same hue
-      colors[pointIdx] = `hsl(${hue}, 68%, ${light}%)`
+      colors[pointIdx] = hslToHex(hue, 68, light)
     })
   }
   return colors
@@ -58,12 +68,14 @@ const STEP_INDEX: Record<LLMStep, number> = {
 
 function TransformerSVG() {
   // Block visual style presets
+  // Fill/stroke pairs drawn from the same qualitative hue family as the token/cluster
+  // palettes above (hues 348 and 198), replacing the old off-brand blue/teal blocks.
   const S = {
     attn:    { fill: 'rgba(109,40,217,0.18)', stroke: '#7c3aed' },
     norm:    { fill: 'rgba(55,65,81,0.28)',   stroke: '#6b7280' },
-    ff:      { fill: 'rgba(29,78,216,0.18)',  stroke: '#3b82f6' },
+    ff:      { fill: 'rgba(190,24,73,0.18)',  stroke: '#fb7185' },
     emb:     { fill: 'rgba(180,83,9,0.20)',   stroke: '#d97706' },
-    linear:  { fill: 'rgba(13,148,136,0.18)', stroke: '#14b8a6' },
+    linear:  { fill: 'rgba(14,116,144,0.18)', stroke: '#67e8f9' },
     softmax: { fill: 'rgba(139,92,246,0.20)', stroke: '#a78bfa' },
     io:      { fill: 'rgba(31,31,46,0.70)',   stroke: '#4b5563' },
   }
@@ -253,14 +265,19 @@ function StepIndicator({ step }: { step: LLMStep }) {
           <div key={s} className="flex items-center gap-1">
             <div
               className={[
-                'px-3 py-1 rounded-full text-xs font-semibold transition-all',
+                'inline-flex items-center gap-1 px-3 py-1 rounded-sm text-xs font-semibold transition-colors',
                 done ? 'bg-purple/20 text-purple-light border border-purple/30'
                   : current ? 'bg-purple text-white border border-purple'
                     : 'bg-bg-card text-text-muted border border-border-subtle',
               ].join(' ')}
               style={current ? { boxShadow: '0 0 12px rgba(139,92,246,0.4)' } : {}}
             >
-              {done && '✓ '}{s}
+              {done && (
+                <svg className="w-2.5 h-2.5 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2.5 6.5l2.5 2.5 4.5-5.5" />
+                </svg>
+              )}
+              {s}
             </div>
             {i < steps.length - 1 && (
               <svg className="w-3 h-3 text-text-muted/40 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
@@ -284,7 +301,7 @@ function TokenChip({ text, color, id }: { text: string; color: string; id?: numb
         {text}
       </span>
       {id !== undefined && (
-        <span className="text-[9px] text-text-muted/50 font-mono">{id}</span>
+        <span className="text-[10px] text-text-muted/50 font-mono">{id}</span>
       )}
     </div>
   )
@@ -302,7 +319,7 @@ function BackLink({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="text-[11px] text-text-muted/40 hover:text-purple-light transition-colors cursor-pointer mb-3 flex items-center gap-1"
+      className="text-[10px] text-text-muted/40 hover:text-purple-light transition-colors cursor-pointer mb-3 flex items-center gap-1"
     >
       <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M8 2L4 6l4 4" />
@@ -317,7 +334,7 @@ function BackLink({ label, onClick }: { label: string; onClick: () => void }) {
 function StepHeading({ n, label }: { n: number; label: string }) {
   return (
     <div className="flex items-center gap-2 mb-2">
-      <span className="w-5 h-5 rounded-full bg-purple text-white text-[10px] font-bold flex items-center justify-center shrink-0">{n}</span>
+      <span className="w-5 h-5 rounded-sm bg-purple text-white text-[10px] font-bold flex items-center justify-center shrink-0">{n}</span>
       <h2 className="text-sm font-semibold text-text-body">{label}</h2>
     </div>
   )
@@ -331,7 +348,7 @@ function ClusterSummary({ result, loading }: { result: ClusterResult | null; loa
   }
   if (!result || result.groups.length === 0) return null
   return (
-    <div className="text-xs text-text-muted leading-relaxed mt-3 bg-bg-base/50 border border-border-subtle rounded-lg p-3">
+    <div className="text-xs text-text-muted leading-relaxed mt-3 bg-bg-base border border-border-subtle rounded-lg p-3">
       Tokens closer to each other are considered similar. You can identify{' '}
       <span className="text-text-body font-medium">{result.nGroups}</span> group{result.nGroups > 1 ? 's' : ''} where:
       <ul className="mt-1.5 space-y-1">
@@ -342,7 +359,7 @@ function ClusterSummary({ result, loading }: { result: ClusterResult | null; loa
           </li>
         ))}
       </ul>
-      <p className="mt-2.5 pt-2 border-t border-border-subtle/60 text-[11px] leading-snug text-text-muted/50 italic">
+      <p className="mt-2.5 pt-2 border-t border-border-subtle/60 text-[10px] leading-snug text-text-muted/50 italic">
         Heads up: labels come from spaCy part-of-speech tags and WordNet where possible, falling back
         to a tiny 0.5B-parameter model (Qwen2.5-0.5B, 4-bit, on CPU) — so they are rough approximations
         and can be inaccurate. The groups themselves are clustered on the 2D PCA projection of Qwen's
@@ -372,6 +389,7 @@ export function LLMPage() {
   const [tokenizeLoading, setTokenizeLoading] = useState(false)
   const [encodeLoading, setEncodeLoading] = useState(false)
   const [embedLoading, setEmbedLoading] = useState(false)
+  const [genError, setGenError] = useState<string | null>(null)
 
   const encodeRef      = useRef<HTMLDivElement>(null)
   const embedRef       = useRef<HTMLDivElement>(null)
@@ -452,40 +470,46 @@ export function LLMPage() {
   }
 
   const handleGenerate = async () => {
+    setGenError(null)
     setStep('generating')
-    const result = await llmApi.generate(prompt, tokens, tokenIds)
-    const colorFor = (i: number) => OUTPUT_PALETTE[i % OUTPUT_PALETTE.length]!
-    setOutputTokens(result.outputTokens.map((t, i) => ({ text: t, color: colorFor(i), id: result.outputIds?.[i] })))
-    const pts = result.outputPoints ?? []
-    setOutputPoints(pts.map((p, i) => ({ ...p, color: colorFor(i) })))
-    setStep('output')
-    // Cluster the output embeddings, describe the groups, and recolor the output
-    // tokens + plot by cluster (async, non-blocking).
-    setOutputClusters(null)
-    if (pts.length > 0) {
-      setOutputClusterLoading(true)
-      llmApi.cluster(pts)
-        .then(res => {
-          setOutputClusters(res)
-          const cols = clusterShades(res.assignments)
-          if (cols.length) {
-            // pts are de-duplicated; the output chips keep every token, so colour
-            // the chips by label (repeats share a colour) and the plot by index.
-            const colorByToken = new Map<string, string>()
-            pts.forEach((p, i) => { colorByToken.set(p.label.trim(), cols[i] ?? '#6b7280') })
-            setOutputTokens(prev => prev.map(t => ({ ...t, color: colorByToken.get(t.text.trim()) ?? t.color })))
-            setOutputPoints(prev => prev.map((p, i) => ({ ...p, color: cols[i] ?? p.color })))
-          }
-        })
-        .catch(() => setOutputClusters(null))
-        .finally(() => setOutputClusterLoading(false))
+    try {
+      const result = await llmApi.generate(prompt, tokens, tokenIds)
+      const colorFor = (i: number) => OUTPUT_PALETTE[i % OUTPUT_PALETTE.length]!
+      setOutputTokens(result.outputTokens.map((t, i) => ({ text: t, color: colorFor(i), id: result.outputIds?.[i] })))
+      const pts = result.outputPoints ?? []
+      setOutputPoints(pts.map((p, i) => ({ ...p, color: colorFor(i) })))
+      setStep('output')
+      // Cluster the output embeddings, describe the groups, and recolor the output
+      // tokens + plot by cluster (async, non-blocking).
+      setOutputClusters(null)
+      if (pts.length > 0) {
+        setOutputClusterLoading(true)
+        llmApi.cluster(pts)
+          .then(res => {
+            setOutputClusters(res)
+            const cols = clusterShades(res.assignments)
+            if (cols.length) {
+              // pts are de-duplicated; the output chips keep every token, so colour
+              // the chips by label (repeats share a colour) and the plot by index.
+              const colorByToken = new Map<string, string>()
+              pts.forEach((p, i) => { colorByToken.set(p.label.trim(), cols[i] ?? '#6b7280') })
+              setOutputTokens(prev => prev.map(t => ({ ...t, color: colorByToken.get(t.text.trim()) ?? t.color })))
+              setOutputPoints(prev => prev.map((p, i) => ({ ...p, color: cols[i] ?? p.color })))
+            }
+          })
+          .catch(() => setOutputClusters(null))
+          .finally(() => setOutputClusterLoading(false))
+      }
+    } catch {
+      setGenError('Generation failed — the LLM service may be unavailable. Try again.')
+      setStep('embedded')
     }
   }
 
   const handleReset = () => {
     setStep('input'); setPrompt(''); setTokens([]); setTokenColors([])
     setTokenIds([]); setEmbedPoints([]); setOutputTokens([]); setOutputPoints([])
-    setInputClusters(null); setOutputClusters(null)
+    setInputClusters(null); setOutputClusters(null); setGenError(null)
   }
 
   const done = (s: LLMStep) => STEP_INDEX[step] > STEP_INDEX[s]
@@ -495,7 +519,7 @@ export function LLMPage() {
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-baseline gap-4 mb-1">
-          <h1 className="text-2xl font-bold text-text-body">LLMs <span className="text-purple-light">Explained</span></h1>
+          <h1 className="text-2xl font-bold text-purple-light">LLMs Explained</h1>
           <GitHubRepoLink repo="chnnxyz/sashar-dev-llm-api" />
         </div>
         <p className="text-sm text-text-muted mb-3">Step through how a large language model processes and generates text.</p>
@@ -531,12 +555,16 @@ export function LLMPage() {
               onChange={e => setPrompt(e.target.value)}
               placeholder="Enter a prompt…"
               rows={3}
-              className="w-full bg-bg-base/80 border border-border-subtle rounded-lg px-3 py-2 text-sm text-text-body placeholder:text-text-muted/50 focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition-all resize-none mb-2"
-              style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}
+              className="w-full bg-bg-base/80 border border-border-subtle rounded-sm px-3 py-2 text-sm text-text-body placeholder:text-text-muted/50 focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition resize-none mb-2 shadow-inset-field"
               onKeyDown={e => { if (e.key === 'Enter' && e.metaKey && prompt.trim()) handleTokenize() }}
             />
-            <p className="text-[11px] text-text-muted/40 mb-3">
-              ⚠ English only. Tokenization uses whitespace splitting and will not handle other scripts correctly.
+            <p className="flex items-center gap-1 text-[10px] text-text-muted/40 mb-3">
+              <svg className="w-2.5 h-2.5 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 1.5L10.5 10H1.5L6 1.5z" />
+                <path d="M6 4.75v2.25" />
+                <circle cx="6" cy="8.5" r="0.5" fill="currentColor" stroke="none" />
+              </svg>
+              English only. Tokenization uses whitespace splitting and will not handle other scripts correctly.
             </p>
             <Button onClick={handleTokenize} disabled={!prompt.trim()} loading={tokenizeLoading} size="sm">
               Tokenize
@@ -555,7 +583,7 @@ export function LLMPage() {
                 <TokenChip key={i} text={t} color={tokenColors[i]!} />
               ))}
             </div>
-            <p className="text-[11px] text-text-muted/60 leading-relaxed mb-6">
+            <p className="text-[10px] text-text-muted/60 leading-relaxed mb-6">
               The trailing <span className="font-mono text-text-muted">&lt;|im_end|&gt;</span> is a special control token from Qwen's ChatML format — it marks the end of a message turn. The model is trained to stop and hand back to the assistant when it sees it, which is what makes it answer your input rather than continue the sentence.
             </p>
 
@@ -621,6 +649,11 @@ export function LLMPage() {
               <Button onClick={handleGenerate} size="sm">
                 Generate Output →
               </Button>
+              {genError && (
+                <div className="mt-3 bg-rose-950/30 border border-rose-800/40 rounded-lg px-3 py-2">
+                  <p className="text-xs text-rose-400">{genError}</p>
+                </div>
+              )}
             </div>
 
             {/* Transformer SVG while generating */}

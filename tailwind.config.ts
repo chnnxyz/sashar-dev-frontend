@@ -19,8 +19,11 @@ export default {
         'text-muted': '#9ca3af',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Archivo', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+      },
+      boxShadow: {
+        'inset-field': 'inset 0 1px 3px rgba(0,0,0,0.3)',
       },
     },
   },

@@ -136,9 +136,9 @@ export function LinePlot({ historical, forecast = [], trainSize, title, classNam
           const tip = tooltipRef.current
           const dateStr = d3.timeFormat('%b %d, %Y')(d.date)
           tip.innerHTML = [
-            `<div style="font-size:10px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${dateStr}</div>`,
-            `<div style="font-size:11px;color:#d1d5db">Forecast: <span style="font-family:monospace;color:#a78bfa">${d.value.toFixed(3)}</span></div>`,
-            rmse !== undefined ? `<div style="font-size:11px;color:#d1d5db">RMSE: <span style="font-family:monospace;color:#9ca3af">${rmse.toFixed(3)}</span></div>` : '',
+            `<div style="font-size:10px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">${dateStr}</div>`,
+            `<div style="font-size:10px;color:#e5e7eb">Forecast: <span style="font-family:monospace;color:#a78bfa">${d.value.toFixed(3)}</span></div>`,
+            rmse !== undefined ? `<div style="font-size:10px;color:#e5e7eb">RMSE: <span style="font-family:monospace;color:#9ca3af">${rmse.toFixed(3)}</span></div>` : '',
           ].join('')
           tip.style.opacity = '1'
           positionTooltip(tip, event)
@@ -171,7 +171,7 @@ export function LinePlot({ historical, forecast = [], trainSize, title, classNam
               <line x1="0" y1="4" x2="18" y2="4" stroke={item.color} strokeWidth="2"
                 strokeDasharray={item.dash ? '6 3' : undefined} />
             </svg>
-            <span className="text-[11px] text-text-muted">{item.label}</span>
+            <span className="text-[10px] text-text-muted">{item.label}</span>
           </div>
         ))}
       </div>
@@ -179,7 +179,7 @@ export function LinePlot({ historical, forecast = [], trainSize, title, classNam
         <div
           ref={tooltipRef}
           className="fixed z-[9999] pointer-events-none rounded-lg px-3 py-2 shadow-xl"
-          style={{ opacity: 0, transition: 'opacity 0.1s', top: 0, left: 0, background: '#1a1a22', border: '1px solid #2d2d35' }}
+          style={{ opacity: 0, transition: 'opacity 0.1s', top: 0, left: 0, background: '#1f1f24', border: '1px solid #2d2d35' }}
         />,
         document.body
       )}

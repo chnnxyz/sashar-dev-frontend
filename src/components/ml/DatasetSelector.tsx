@@ -10,13 +10,12 @@ interface DatasetSelectorProps {
 export function DatasetSelector({ datasets, value, onChange, label = 'Dataset' }: DatasetSelectorProps) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[10px] text-text-muted font-semibold uppercase tracking-widest">{label}</span>
+      <span className="text-xs text-text-muted font-medium">{label}</span>
       <div className="relative">
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className="w-full appearance-none bg-bg-base/80 border border-border-subtle rounded-lg px-3 py-2 text-sm text-text-body focus:outline-none focus:border-purple focus:ring-1 focus:ring-purple/30 transition-all duration-150 cursor-pointer pr-8"
-          style={{ boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.3)' }}
+          className="w-full appearance-none bg-bg-base/80 border border-border-subtle rounded-sm px-3 py-2 text-sm text-text-body focus:outline-none focus:border-purple focus:ring-1 focus:ring-purple/30 transition duration-150 cursor-pointer pr-8 shadow-inset-field"
         >
           {datasets.map(d => (
             <option key={d.id} value={d.id} className="bg-bg-card">

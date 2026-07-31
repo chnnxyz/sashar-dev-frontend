@@ -7,9 +7,11 @@ const TRAIN_COLOR = '#8b5cf6'
 const TEST_COLOR = '#f59e0b'
 const PRED_COLOR = '#10b981'
 const CORRECT_COLOR = '#10b981'
-const INCORRECT_COLOR = '#ef4444'
-// High-contrast palette spanning distinct hue regions for clustering (visible on dark bg)
-const CLASS_COLORS = ['#60a5fa', '#f97316', '#a3e635', '#e879f9', '#fb7185', '#2dd4bf']
+const INCORRECT_COLOR = '#fb7185' // rose-400 — matches the app's rose-based danger convention (not red-*)
+// Qualitative class palette: same hue-family generator as the LLM page's token/cluster
+// colors (consistent saturation/lightness, hues stepped from violet) instead of a
+// default-Tailwind rainbow, so multi-class plots stay in the Night Lab register.
+const CLASS_COLORS = ['#8b5cf6', '#10b981', '#f59e0b', '#fb7185', '#818cf8', '#c084fc']
 
 const CLASS_SYMBOLS = [
   d3.symbolCircle,
@@ -149,7 +151,7 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
           .on('mouseover', (event, d: ScatterPoint) => {
             if (d.correct !== false || !tooltipRef.current) return
             const tip = tooltipRef.current
-            tip.innerHTML = `<div style="font-size:10px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Prediction</div><div style="font-size:11px;color:#d1d5db">True: <span style="font-family:monospace;color:#f59e0b">${d.label ?? '?'}</span></div><div style="font-size:11px;color:#d1d5db">Predicted: <span style="font-family:monospace;color:#ef4444">${d.predictedLabel ?? '?'}</span></div><div style="font-size:11px;color:#d1d5db">Confidence: <span style="font-family:monospace;color:#9ca3af">${d.predictedProb !== undefined ? (d.predictedProb * 100).toFixed(1) + '%' : '?'}</span></div>`
+            tip.innerHTML = `<div style="font-size:10px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Prediction</div><div style="font-size:10px;color:#e5e7eb">True: <span style="font-family:monospace;color:#f59e0b">${d.label ?? '?'}</span></div><div style="font-size:10px;color:#e5e7eb">Predicted: <span style="font-family:monospace;color:#fb7185">${d.predictedLabel ?? '?'}</span></div><div style="font-size:10px;color:#e5e7eb">Confidence: <span style="font-family:monospace;color:#9ca3af">${d.predictedProb !== undefined ? (d.predictedProb * 100).toFixed(1) + '%' : '?'}</span></div>`
             tip.style.opacity = '1'
             positionTooltip(tip, event)
           })
@@ -195,7 +197,7 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
           .on('mouseover', (event, d: ScatterPoint) => {
             if (!tooltipRef.current) return
             const tip = tooltipRef.current
-            tip.innerHTML = `<div style="font-size:10px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Prediction</div><div style="font-size:11px;color:#d1d5db">Real: <span style="font-family:monospace;color:#f59e0b">${d.realValue !== undefined ? d.realValue.toFixed(3) : '?'}</span></div><div style="font-size:11px;color:#d1d5db">Predicted: <span style="font-family:monospace;color:#10b981">${d.y.toFixed(3)}</span></div><div style="font-size:11px;color:#d1d5db">RMSE: <span style="font-family:monospace;color:#9ca3af">${rmse !== undefined ? rmse.toFixed(3) : '?'}</span></div>`
+            tip.innerHTML = `<div style="font-size:10px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Prediction</div><div style="font-size:10px;color:#e5e7eb">Real: <span style="font-family:monospace;color:#f59e0b">${d.realValue !== undefined ? d.realValue.toFixed(3) : '?'}</span></div><div style="font-size:10px;color:#e5e7eb">Predicted: <span style="font-family:monospace;color:#10b981">${d.y.toFixed(3)}</span></div><div style="font-size:10px;color:#e5e7eb">RMSE: <span style="font-family:monospace;color:#9ca3af">${rmse !== undefined ? rmse.toFixed(3) : '?'}</span></div>`
             tip.style.opacity = '1'
             positionTooltip(tip, event)
           })
@@ -241,11 +243,11 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
                 <>
                   <div className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: TRAIN_COLOR }} />
-                    <span className="text-[11px] text-text-muted">Train ({trainCount})</span>
+                    <span className="text-[10px] text-text-muted">Train ({trainCount})</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: TEST_COLOR }} />
-                    <span className="text-[11px] text-text-muted">Test ({testCount})</span>
+                    <span className="text-[10px] text-text-muted">Test ({testCount})</span>
                   </div>
                 </>
               )}
@@ -255,13 +257,13 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
                     <svg width="14" height="14" viewBox="-7 -7 14 14" className="flex-shrink-0">
                       <path d={d3.symbol().type(d3.symbolCircle).size(52)() ?? ''} fill="none" stroke={CORRECT_COLOR} strokeWidth="1.5" />
                     </svg>
-                    <span className="text-[11px] text-text-muted">Correct</span>
+                    <span className="text-[10px] text-text-muted">Correct</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <svg width="14" height="14" viewBox="-7 -7 14 14" className="flex-shrink-0">
                       <path d={d3.symbol().type(d3.symbolCircle).size(52)() ?? ''} fill="none" stroke={INCORRECT_COLOR} strokeWidth="1.5" />
                     </svg>
-                    <span className="text-[11px] text-text-muted">Incorrect (hover for details)</span>
+                    <span className="text-[10px] text-text-muted">Incorrect (hover for details)</span>
                   </div>
                 </>
               )}
@@ -273,7 +275,7 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
               {labels.map((l, i) => (
                 <div key={l} className="flex items-center gap-1.5">
                   {symbolSvg(i, '#9ca3af')}
-                  <span className="text-[11px] text-text-muted">{l}</span>
+                  <span className="text-[10px] text-text-muted">{l}</span>
                 </div>
               ))}
             </div>
@@ -285,7 +287,7 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
             {labels.map((l, i) => (
               <div key={l} className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: CLASS_COLORS[i % CLASS_COLORS.length] }} />
-                <span className="text-[11px] text-text-muted">{l}</span>
+                <span className="text-[10px] text-text-muted">{l}</span>
               </div>
             ))}
           </div>
@@ -295,16 +297,16 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
           <div className="flex flex-wrap gap-x-4 gap-y-1 px-1 shrink-0">
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: TRAIN_COLOR }} />
-              <span className="text-[11px] text-text-muted">Train ({trainCount})</span>
+              <span className="text-[10px] text-text-muted">Train ({trainCount})</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full inline-block flex-shrink-0" style={{ backgroundColor: TEST_COLOR }} />
-              <span className="text-[11px] text-text-muted">Test ({testCount})</span>
+              <span className="text-[10px] text-text-muted">Test ({testCount})</span>
             </div>
             {predictions && predictions.length > 0 && (
               <div className="flex items-center gap-1.5">
                 <svg width="12" height="12" viewBox="0 0 12 12"><polygon points="6,1 11,6 6,11 1,6" fill={PRED_COLOR} /></svg>
-                <span className="text-[11px] text-text-muted">Predicted</span>
+                <span className="text-[10px] text-text-muted">Predicted</span>
               </div>
             )}
           </div>
@@ -314,7 +316,7 @@ export function ScatterPlot({ data, predictions, trainSize, title, xLabel = 'X',
         <div
           ref={tooltipRef}
           className="fixed z-[9999] pointer-events-none rounded-lg px-3 py-2 shadow-xl"
-          style={{ opacity: 0, transition: 'opacity 0.1s', top: 0, left: 0, background: '#1a1a22', border: '1px solid #2d2d35' }}
+          style={{ opacity: 0, transition: 'opacity 0.1s', top: 0, left: 0, background: '#1f1f24', border: '1px solid #2d2d35' }}
         />,
         document.body
       )}

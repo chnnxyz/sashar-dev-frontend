@@ -6,13 +6,13 @@ interface CardProps {
   innerClassName?: string
   title?: string
   actions?: ReactNode
-  /** Suppress the hover-lift for purely static/container cards */
+  /** Suppress the hover brighten for purely static/container cards */
   static?: boolean
 }
 
 export function Card({ children, className = '', innerClassName = '', title, actions, static: isStatic = false }: CardProps) {
   return (
-    <div className={['card', isStatic ? 'hover:transform-none hover:shadow-none' : '', className].join(' ').trim()}>
+    <div className={['card', isStatic ? 'static-card' : '', className].join(' ').trim()}>
       {(title || actions) && (
         <>
           <div className="flex items-center justify-between px-5 py-4">
@@ -21,8 +21,7 @@ export function Card({ children, className = '', innerClassName = '', title, act
             )}
             {actions && <div className="flex items-center gap-2">{actions}</div>}
           </div>
-          {/* gradient separator */}
-          <div className="h-px mx-0 bg-gradient-to-r from-purple/25 via-border-subtle/60 to-transparent" />
+          <div className="h-px mx-0 bg-border-subtle" />
         </>
       )}
       <div className={['p-5', innerClassName].join(' ').trim()}>{children}</div>
