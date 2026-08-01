@@ -149,7 +149,7 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
 
   return (
     <>
-      <Button variant="secondary" onClick={() => setOpen(true)} size="sm">
+      <Button variant="ghost" onClick={() => setOpen(true)} size="sm">
         <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
           <path d="M2 4h12M4 8h8M6 12h4" strokeLinecap="round" />
         </svg>
@@ -253,13 +253,13 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
                   <OptimizationProgress iterations={iterations} streaming={streaming} method={method} error={phase === 'error'} />
 
                   {phase === 'error' && (
-                    <div className="bg-rose-950/30 border border-rose-800/40 rounded-lg p-3">
+                    <div className="bg-rose-950/30 border border-rose-800/40 rounded-sm p-3">
                       <p className="text-xs text-rose-400">Optimization failed — check the ML service and try again.</p>
                     </div>
                   )}
 
                   {phase === 'complete' && best && (
-                    <div className="bg-emerald-950/30 border border-emerald-800/40 rounded-lg p-3">
+                    <div className="bg-emerald-950/30 border border-emerald-800/40 rounded-sm p-3">
                       <p className="text-[10px] text-emerald-400 font-semibold uppercase tracking-widest mb-2">
                         Best Parameters — RMSE {best.rmse.toFixed(4)}
                       </p>

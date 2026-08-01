@@ -37,7 +37,8 @@ export function HyperparameterPanel({ defs, values, onChange, seed, onSeedChange
           <button
             onClick={() => onSeedChange(Math.floor(Math.random() * 999) + 1)}
             title="Random seed"
-            className="p-1 rounded text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40"
+            aria-label="Random seed"
+            className="p-1 rounded-sm text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.8}>
               <path d="M1 8A7 7 0 1 1 8 15" strokeLinecap="round"/>

@@ -46,7 +46,7 @@ export function AboutSections({ visible }: AboutSectionsProps) {
           <span className="font-mono text-[10px] text-text-muted/50 pt-0.5 shrink-0 w-6">
             {String(i + 1).padStart(2, '0')}
           </span>
-          <div>
+          <div className="flex-1 min-w-0">
             <h2 className="text-sm font-semibold text-purple-light mb-1">{section.title}</h2>
             <p className="text-text-muted leading-normal text-sm">{section.content}</p>
           </div>

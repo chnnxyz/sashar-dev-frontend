@@ -77,10 +77,10 @@ function MetricsDisplay({ metrics }: { metrics: Record<string, number> }) {
   return (
     <div className="grid grid-cols-3 gap-3">
       {Object.entries(metrics).map(([key, val]) => (
-        <div key={key} className="bg-bg-base rounded-lg p-3 border border-border-subtle">
+        <Card key={key} static innerClassName="p-3">
           <p className="text-[10px] text-text-muted uppercase tracking-widest mb-1">{key.replace(/_/g, ' ')}</p>
           <p className="text-lg font-bold text-purple-light">{val.toFixed(4)}</p>
-        </div>
+        </Card>
       ))}
     </div>
   )
@@ -293,7 +293,7 @@ export function MLPage() {
             ? 'Forecast with LightGBM, Triple Exponential Smoothing, and GRU models. Visualize historical data and future predictions.'
             : 'Explore regression, classification, and clustering models with interactive hyperparameter control.'}
         </p>
-        <p className="text-xs text-text-muted/70 mt-1.5 font-mono">{stackDesc}</p>
+        <p className="text-xs text-text-muted/80 mt-1.5 font-mono">{stackDesc}</p>
       </div>
 
       <SubNavTabs tabs={tabDefs} active={tab} onChange={t => setTab(t)} />
@@ -356,7 +356,8 @@ export function MLPage() {
                       <button
                         onClick={() => setSplitSeed(Math.floor(Math.random() * 999) + 1)}
                         title="Random split seed"
-                        className="p-1.5 rounded text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40"
+                        aria-label="Random split seed"
+                        className="p-1.5 rounded-sm text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.8}>
                           <path d="M1 8A7 7 0 1 1 8 15" strokeLinecap="round"/>
@@ -420,10 +421,13 @@ export function MLPage() {
               {tab === 'timeseries' ? 'Run Forecast' : 'Run Model'}
             </Button>
             {runError && (
-              <div className="bg-rose-950/30 border border-rose-800/40 rounded-lg px-3 py-2">
+              <div className="bg-rose-950/30 border border-rose-800/40 rounded-sm px-3 py-2">
                 <p className="text-xs text-rose-400">{runError}</p>
               </div>
             )}
+            <p className="text-[10px] text-text-muted/60">
+              Or let Optimize search parameters for you
+            </p>
             <OptimizePanel
               hyperparamDefs={currentDefs}
               onApply={params => setHyperparams(params)}

@@ -220,7 +220,7 @@ function EntryBlock({ entry }: { entry: CVEntry }) {
   return (
     <div className="mb-5 last:mb-0">
       <div className="flex items-start justify-between gap-2 mb-1">
-        <span className="font-semibold text-text-body text-sm">{entry.title}</span>
+        <span className="font-semibold text-text-body text-sm flex-1 min-w-0">{entry.title}</span>
         <span className="text-xs text-text-muted whitespace-nowrap shrink-0">{entry.period}</span>
       </div>
       <div className="text-xs text-purple-light mb-2">{entry.org}</div>

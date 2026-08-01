@@ -54,7 +54,7 @@ export function LabHero({ onComplete }: LabHeroProps) {
   return (
     <div className="relative h-[20vh] min-h-[210px] w-full select-none overflow-hidden flex flex-col items-center justify-center pt-14">
       <div className="flex flex-col items-center">
-        <p className="font-mono text-xs sm:text-sm text-text-muted/70 mb-2">
+        <p className="font-mono text-xs sm:text-sm text-text-muted/80 mb-2">
           <span className="text-purple-light">visitor@sashar</span>:~$ {typed}
           <span className={['terminal-cursor ml-0.5', atLeast('name') ? 'opacity-0' : 'opacity-100'].join(' ')}>▮</span>
         </p>

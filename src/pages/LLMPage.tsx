@@ -3,6 +3,7 @@ import * as d3 from 'd3'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { GitHubRepoLink } from '../components/shared/GitHubRepoLink'
 import { Button } from '../components/shared/Button'
+import { Card } from '../components/shared/Card'
 import { llmApi } from '../api/api'
 import type { ClusterResult } from '../types'
 
@@ -296,7 +297,7 @@ function StepIndicator({ step }: { step: LLMStep }) {
 function TokenChip({ text, color, id }: { text: string; color: string; id?: number }) {
   return (
     <div className="flex flex-col items-center gap-0.5">
-      <span className="px-2 py-1 rounded text-xs font-mono whitespace-pre"
+      <span className="px-2 py-1 rounded-sm text-xs font-mono whitespace-pre"
         style={{ backgroundColor: color + '22', color, border: `1px solid ${color}55` }}>
         {text}
       </span>
@@ -348,7 +349,7 @@ function ClusterSummary({ result, loading }: { result: ClusterResult | null; loa
   }
   if (!result || result.groups.length === 0) return null
   return (
-    <div className="text-xs text-text-muted leading-relaxed mt-3 bg-bg-base border border-border-subtle rounded-lg p-3">
+    <Card static className="mt-3" innerClassName="p-3 text-xs text-text-muted leading-relaxed">
       Tokens closer to each other are considered similar. You can identify{' '}
       <span className="text-text-body font-medium">{result.nGroups}</span> group{result.nGroups > 1 ? 's' : ''} where:
       <ul className="mt-1.5 space-y-1">
@@ -367,7 +368,7 @@ function ClusterSummary({ result, loading }: { result: ClusterResult | null; loa
         so the groupings are noisy and shouldn't be read as ground truth. (The full embeddings don't
         separate fine categories like fruit vs animal either — that's a limit of a model this small.)
       </p>
-    </div>
+    </Card>
   )
 }
 
@@ -523,7 +524,7 @@ export function LLMPage() {
           <GitHubRepoLink repo="chnnxyz/sashar-dev-llm-api" />
         </div>
         <p className="text-sm text-text-muted mb-3">Step through how a large language model processes and generates text.</p>
-        <p className="text-xs text-text-muted/70 leading-relaxed">
+        <p className="text-xs text-text-muted/80 leading-relaxed">
           Text is first <span className="text-text-muted">tokenized</span> into subword units, not necessarily whole words; a single word can split into multiple tokens, and punctuation or whitespace often becomes its own token.
           Each token is then <span className="text-text-muted">encoded</span> as a vocabulary index, a unique integer from a table of tens of thousands of entries fixed during training.
           Those indices are projected into dense <span className="text-text-muted">embedding</span> vectors, high-dimensional numeric representations where semantically related tokens cluster nearby in the learned space.
@@ -558,7 +559,7 @@ export function LLMPage() {
               className="w-full bg-bg-base/80 border border-border-subtle rounded-sm px-3 py-2 text-sm text-text-body placeholder:text-text-muted/50 focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition resize-none mb-2 shadow-inset-field"
               onKeyDown={e => { if (e.key === 'Enter' && e.metaKey && prompt.trim()) handleTokenize() }}
             />
-            <p className="flex items-center gap-1 text-[10px] text-text-muted/40 mb-3">
+            <p className="flex items-center gap-1 text-[10px] text-amber-400 mb-3">
               <svg className="w-2.5 h-2.5 shrink-0" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 1.5L10.5 10H1.5L6 1.5z" />
                 <path d="M6 4.75v2.25" />
@@ -650,7 +651,7 @@ export function LLMPage() {
                 Generate Output →
               </Button>
               {genError && (
-                <div className="mt-3 bg-rose-950/30 border border-rose-800/40 rounded-lg px-3 py-2">
+                <div className="mt-3 bg-rose-950/30 border border-rose-800/40 rounded-sm px-3 py-2">
                   <p className="text-xs text-rose-400">{genError}</p>
                 </div>
               )}

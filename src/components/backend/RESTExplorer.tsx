@@ -81,6 +81,7 @@ function EndpointCard({ endpoint }: { endpoint: RESTEndpointDef }) {
     <Card static className="overflow-hidden" innerClassName="p-0">
       <button
         onClick={() => setExpanded(v => !v)}
+        aria-expanded={expanded}
         className="w-full flex items-center gap-3 px-4 py-2 hover:bg-bg-surface/50 transition-colors text-left cursor-pointer"
       >
         <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded-sm border ${METHOD_COLORS[endpoint.method]}`}>

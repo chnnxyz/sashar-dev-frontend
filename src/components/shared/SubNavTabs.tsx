@@ -13,7 +13,7 @@ export function SubNavTabs<T extends string>({ tabs, active, onChange }: SubNavT
   return (
     <div
       className="flex gap-1 p-1 rounded-sm w-fit bg-bg-card border border-border-subtle"
-      style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.35)' }}
+      style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.45)' }}
     >
       {tabs.map(tab => (
         <button

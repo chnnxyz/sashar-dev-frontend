@@ -34,13 +34,13 @@ export function BackendPage() {
         {/* Entire page content — shifts right on desktop when sidebar is open */}
         <div className={['transition-[padding] duration-300', sidebarOpen && tab === 'graphql' ? 'lg:pl-72' : ''].join(' ')}>
           <div className="mb-6 flex items-start justify-between gap-4">
-            <div>
+            <div className="min-w-0">
               <div className="flex items-baseline gap-4 mb-1">
                 <h1 className="text-2xl font-bold text-purple-light">Backend Playground</h1>
                 <GitHubRepoLink repo={tab === 'graphql' ? 'chnnxyz/sashar-dev-gql-api' : 'chnnxyz/sashar-dev-rest-api'} />
               </div>
               <p className="text-sm text-text-muted">Explore this site via GraphQL queries or REST endpoints backed by a live Go API.</p>
-              <p className="text-xs text-text-muted/70 mt-1.5 font-mono">
+              <p className="text-xs text-text-muted/80 mt-1.5 font-mono">
                 {tab === 'graphql'
                   ? `Go · gqlgen · SQLite (shared) · ${GQL_PROD_URL}`
                   : `Go · Gorilla Mux · SQLite (shared) · ${REST_PROD_URL}`}

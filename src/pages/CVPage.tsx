@@ -29,7 +29,7 @@ export function CVPage() {
   return (
     <PageWrapper>
       <div className="mb-6 flex items-start justify-between gap-4">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-purple-light">Sasha Ruiz de Aguirre</h1>
           <p className="text-sm text-text-muted mt-1">
             <a href="mailto:s@chnn.xyz" className="hover:text-purple-light transition-colors duration-150">s@chnn.xyz</a> · <a href="https://linkedin.com/in/sruizdea" target="_blank" rel="noreferrer" className="hover:text-purple-light transition-colors duration-150">linkedin.com/in/sruizdea</a> · <a href="https://github.com/chnnxyz" target="_blank" rel="noreferrer" className="hover:text-purple-light transition-colors duration-150">github.com/chnnxyz</a> · <a href="https://wa.me/523314437948" target="_blank" rel="noreferrer" className="hover:text-purple-light transition-colors duration-150">+52 (331) 443 7948</a>

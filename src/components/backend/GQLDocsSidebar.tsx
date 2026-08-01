@@ -15,6 +15,7 @@ function DocEntry({ doc, onUse, panelOpen }: DocEntryProps) {
       <button
         onClick={() => setOpen(v => !v)}
         tabIndex={panelOpen ? undefined : -1}
+        aria-expanded={open}
         className="w-full flex items-center gap-2 text-left cursor-pointer group"
       >
         <span className="text-xs font-mono font-semibold text-purple-light group-hover:text-purple transition-colors">{doc.name}</span>
@@ -30,7 +31,7 @@ function DocEntry({ doc, onUse, panelOpen }: DocEntryProps) {
             <div className="space-y-1.5">
               <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest">Parameters</p>
               {doc.args.map(arg => (
-                <div key={arg.name} className="bg-bg-base rounded-lg p-2 space-y-1 border border-border-subtle">
+                <div key={arg.name} className="bg-bg-base rounded-sm p-2 space-y-1 border border-border-subtle">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] font-mono font-semibold text-purple-light">{arg.name}</span>
                     <span className="text-[10px] font-mono text-text-muted bg-bg-surface px-1.5 py-0.5 rounded-sm">{arg.type}</span>
@@ -107,6 +108,7 @@ export function GQLDocsSidebar({ open, onClose, onUse }: GQLDocsSidebarProps) {
           <button
             onClick={onClose}
             tabIndex={open ? undefined : -1}
+            aria-label="Close API docs"
             className="text-text-muted hover:text-text-body transition-colors cursor-pointer"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
