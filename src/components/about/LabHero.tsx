@@ -52,17 +52,17 @@ export function LabHero({ onComplete }: LabHeroProps) {
   }, [stage, onComplete])
 
   return (
-    <div className="relative h-[20vh] min-h-[210px] w-full select-none overflow-hidden flex flex-col items-center justify-center pt-14">
+    <div className="relative h-[20vh] min-h-[210px] w-full select-none overflow-hidden flex flex-col items-center justify-center pt-14 px-6">
       <div className="flex flex-col items-center">
         <p className="font-mono text-xs sm:text-sm text-text-muted/80 mb-2">
           <span className="text-purple-light">visitor@sashar</span>:~$ {typed}
           <span className={['terminal-cursor ml-0.5', atLeast('name') ? 'opacity-0' : 'opacity-100'].join(' ')}>▮</span>
         </p>
         <h1 className={[fade(atLeast('name')), 'text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-center leading-tight text-purple-light'].join(' ')}>
-          Sasha Ruiz de Aguirre
+          Sasha Marina Ruiz de Aguirre
         </h1>
-        <p className={[fade(atLeast('role')), 'mt-2.5 font-mono text-xs sm:text-sm text-text-muted'].join(' ')}>
-          machine_learning_engineer · backend_developer
+        <p className={[fade(atLeast('role')), 'mt-2.5 font-mono text-xs sm:text-sm text-text-muted text-center'].join(' ')}>
+          machine_learning_engineer · backend_developer · technical_lead
         </p>
         <div className={[fade(atLeast('link')), 'mt-2'].join(' ')}>
           <GitHubRepoLink repo="chnnxyz" />

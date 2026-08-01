@@ -45,13 +45,13 @@ export function GraphQLEditor({ query, onQueryChange }: GraphQLEditorProps) {
           <div className="flex gap-2 items-center">
             <button
               onClick={() => setShowVars(v => !v)}
-              className="text-xs text-text-muted hover:text-purple-light transition-colors cursor-pointer"
+              className="text-xs text-text-muted hover:text-purple-light transition-colors cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple/50"
             >
               {showVars ? '− Variables' : '+ Variables'}
             </button>
             <button
               onClick={() => onQueryChange('')}
-              className="text-xs text-text-muted hover:text-purple-light transition-colors cursor-pointer"
+              className="text-xs text-text-muted hover:text-purple-light transition-colors cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple/50"
             >
               Clear
             </button>
@@ -94,7 +94,7 @@ export function GraphQLEditor({ query, onQueryChange }: GraphQLEditorProps) {
           {response && (
             <button
               onClick={() => setResponse(null)}
-              className="text-xs text-text-muted hover:text-text-body transition-colors cursor-pointer"
+              className="text-xs text-text-muted hover:text-text-body transition-colors cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple/50"
             >
               Clear
             </button>

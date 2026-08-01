@@ -6,9 +6,18 @@ interface OptimizationProgressProps {
   streaming: boolean
   method: string
   error?: boolean
+  /** Display label for the streamed value — e.g. "RMSE", "Binary Cross-Entropy",
+   * "Davies-Bouldin Index" — the underlying field is always minimized regardless
+   * of what it's called. Defaults to "RMSE" for callers that don't pass one. */
+  metricLabel?: string
+  /** Compact form for the narrow iteration-table column header (e.g. "BCE"). */
+  metricLabelShort?: string
 }
 
-export function OptimizationProgress({ iterations, streaming, method, error = false }: OptimizationProgressProps) {
+export function OptimizationProgress({
+  iterations, streaming, method, error = false,
+  metricLabel = 'RMSE', metricLabelShort = 'RMSE',
+}: OptimizationProgressProps) {
   const best = iterations.length > 0 ? iterations.reduce((a, b) => a.rmse < b.rmse ? a : b) : null
   const paramKeys = best ? Object.keys(best.params) : []
   const recent = [...iterations].reverse().slice(0, 8)
@@ -23,7 +32,7 @@ export function OptimizationProgress({ iterations, streaming, method, error = fa
               ? <><span className="w-2 h-2 rounded-full bg-purple animate-pulse" /><span className="text-xs text-purple-light">Streaming — {method}</span></>
               : <><span className="w-2 h-2 rounded-full bg-emerald-400" /><span className="text-xs text-emerald-400">Complete — {iterations.length} iterations</span></>}
         </div>
-        {best && <span className="text-xs text-text-muted">best RMSE <strong className="text-emerald-400 font-mono">{best.rmse.toFixed(4)}</strong></span>}
+        {best && <span className="text-xs text-text-muted">best {metricLabel} <strong className="text-emerald-400 font-mono">{best.rmse.toFixed(4)}</strong></span>}
       </div>
 
       <LossIterationChart data={iterations.map(it => ({ iteration: it.iteration, rmse: it.rmse }))} />
@@ -31,13 +40,13 @@ export function OptimizationProgress({ iterations, streaming, method, error = fa
       {iterations.length > 0 && (
         <div>
           <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest mb-2">Recent iterations</p>
-          <div className="rounded-lg border border-border-subtle overflow-hidden">
+          <div className="rounded-sm border border-border-subtle overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-border-subtle bg-bg-base/60">
                     <th className="text-left px-3 py-2 text-text-muted font-medium w-10">#</th>
-                    <th className="text-left px-3 py-2 text-text-muted font-medium w-20">RMSE</th>
+                    <th className="text-left px-3 py-2 text-text-muted font-medium w-20">{metricLabelShort}</th>
                     {paramKeys.map(k => (
                       <th key={k} className="text-left px-3 py-2 text-text-muted font-medium">{k}</th>
                     ))}

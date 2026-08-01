@@ -2,20 +2,20 @@ import { Card } from '../shared/Card'
 
 const sections = [
   {
-    title: 'Who I Am',
-    content: `I'm Sasha Ruiz de Aguirre, 33, based in Guadalajara, Mexico. Physicist by training, engineer by trade. I've spent the last decade building ML systems and backend infrastructure across industries ranging from fintech and e-commerce to industrial IoT and gaming. Outside of work I produce music, DJ, and shoot photography; I find these creative disciplines feed back into how I approach technical problems.`,
+    title: '$ whoami',
+    content: `Sasha Marina Ruiz de Aguirre. 33. Guadalajara, Mexico. Physicist by training, engineer by trade. I've spent the last decade building ML systems and backend infrastructure across industries ranging from fintech and e-commerce to industrial IoT and gaming. Outside of work I produce music, DJ, and shoot photography; I find these creative disciplines feed back into how I approach technical problems.`,
   },
   {
-    title: 'What I Do',
-    content: `I build production ML and backend services: recommendation engines, time series forecasting pipelines, anomaly detection, LLM applications, and fuzzy logic controllers for industrial automation. On the backend side I design microservice architectures in Go and Elixir. For large-scale distributed workloads I reach for Spark and Kubernetes.`,
+    title: '$ mywork',
+    content: `I build production ML and backend services: recommendation engines, time series forecasting pipelines, Spark ETL workflows, anomaly detection, LLM applications, and fuzzy logic controllers. On the backend side I design microservice architectures in Go and Elixir with Kubernetes.`,
   },
   {
-    title: 'My Approach',
-    content: `A physics background rewired how I approach problems: model the system first, identify the real constraints, then find the most direct path to a solution. I tend to iterate quickly, borrow ideas from adjacent fields, and question assumptions that get treated as fixed. Strong fundamentals usually mean finding faster, cleaner paths through complexity.`,
+    title: '$ myapproach',
+    content: `My background in physics defined how I approach problems: model the system first, identify the real constraints, then find the most direct path to a solution. I tend to iterate quickly, research on the relevant industry fields, and question assumptions that would commonly be treated as hard rules. My knowledge of mathematics and algorithms helps me identify the ideal balance between cost and accuracy.`,
   },
   {
-    title: 'Current Focus',
-    content: `At Udemy I'm building behavior-based promotion and recommendation systems using deep reinforcement learning. At Sistemas Agaricus I'm working on backend architecture for web and mobile products. On the data side I handle database migrations and real-time model training pipelines. Outside of work I'm exploring systems programming, IoT, electronics, and game development.`,
+    title: '$ currentfocus',
+    content: `At Udemy I'm building behavior-based promotion and recommendation systems using deep reinforcement learning. At Sistemas Agaricus I'm working on end-to-end product architecture. I work with DeltaLake lakehouses and on-line model training anf inference pipelines. As a hobby I'm exploring systems programming, IoT, electronics, and game development.`,
   },
 ]
 
@@ -43,7 +43,7 @@ export function AboutSections({ visible }: AboutSectionsProps) {
           className={[rowClass, visible ? 'opacity-100' : 'opacity-0'].join(' ')}
           style={rowStyle(i)}
         >
-          <span className="font-mono text-[10px] text-text-muted/50 pt-0.5 shrink-0 w-6">
+          <span className="font-mono text-[10px] text-text-muted/80 pt-0.5 shrink-0 w-6">
             {String(i + 1).padStart(2, '0')}
           </span>
           <div className="flex-1 min-w-0">
@@ -57,11 +57,11 @@ export function AboutSections({ visible }: AboutSectionsProps) {
         className={[rowClass, visible ? 'opacity-100' : 'opacity-0'].join(' ')}
         style={rowStyle(sections.length)}
       >
-        <span className="font-mono text-[10px] text-text-muted/50 pt-0.5 shrink-0 w-6">
+        <span className="font-mono text-[10px] text-text-muted/80 pt-0.5 shrink-0 w-6">
           {String(sections.length + 1).padStart(2, '0')}
         </span>
         <div className="flex-1 min-w-0">
-          <h2 className="text-sm font-semibold text-purple-light mb-2">Technical Skills</h2>
+          <h2 className="text-sm font-semibold text-purple-light mb-2">$ techskills</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {skills.map(group => (
               <Card key={group.category} static innerClassName="p-3">

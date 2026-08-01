@@ -11,6 +11,7 @@ import { OptimizePanel } from '../components/ml/OptimizePanel'
 import { CVMetricsCard } from '../components/shared/CVMetricsCard'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { GitHubRepoLink } from '../components/shared/GitHubRepoLink'
+import { focusRing } from '../components/shared/focusRing'
 import { mlApi, tsApi } from '../api/api'
 import {
   regressionHyperparams, classificationHyperparams, clusteringHyperparams, tsHyperparams,
@@ -53,23 +54,23 @@ const tsModelOptions = [
 
 const aboutModels: Record<MLTab, Array<{ name: string; desc: string }>> = {
   regression: [
-    { name: 'ElasticNet', desc: 'Linear regression with L1+L2 regularization — my default first pass on any small-to-medium tabular set. Cheap to fit, and the coefficients actually tell you something.' },
-    { name: 'LightGBM', desc: 'Leaf-wise gradient boosting. Usually wins on this dataset; the tradeoff is you lose the coefficient-level interpretability ElasticNet gives you for free.' },
-    { name: 'Multi-Layer Perceptron', desc: 'A plain feedforward net in PyTorch, capped at 50 epochs on this box (no GPU here). Worth trying when the relationship clearly isn’t linear — otherwise it’s usually not worth the training time.' },
+    { name: 'ElasticNet', desc: 'Expands the traditional Linear Regression with L1+L2 regularization. Cheap, fast and explainable.' },
+    { name: 'LightGBM', desc: 'A fast and effective Gradient Boosting ensemble of decision trees. Explainable through SHAP. Wins every Kaggle competition but might overfit.' },
+    { name: 'Multi-Layer Perceptron', desc: 'A fully-connected Feed Forward Neural Network (FFNN), great at capturing non-linear relationships, but not very explainable. Capped at 50 epochs due to VM specs.' },
   ],
   classification: [
-    { name: 'Logistic Regression', desc: 'Still the first thing I reach for on a binary/multiclass problem. Boring, fast, and the decision boundary is easy to reason about.' },
-    { name: 'SVM', desc: 'The kernel trick handles non-linear boundaries well, though it gets slow past a few thousand rows — fine here, would reconsider at scale.' },
-    { name: 'LightGBM', desc: 'Same boosted-tree engine as the regression tab, tuned for classification. Tends to edge out logistic regression on accuracy at the cost of a black-box decision boundary.' },
+    { name: 'Logistic Regression', desc: 'The most basic binary classifier: A generalized linear model with a sigmoid transform and a decision threshold.' },
+    { name: 'SVM', desc: 'Proposed in the 1970s and developed by AT&T. Classifies by finding a maximal-margin hyperplane. Great on small datasets but bad at scaling.' },
+    { name: 'LightGBM', desc: 'An ensemble of gradient boosted decision trees. Extremely effective even in multi-label scenarios, but might overfit.' },
   ],
   clustering: [
-    { name: 'K-Means', desc: 'Centroid-based, assumes roughly spherical clusters. Fast and a reasonable first guess — the real work is picking k.' },
+    { name: 'K-Means', desc: 'Centroid-based, assumes roughly spherical clusters. Selecting the number of clusters is commonly the most complicated part.' },
     { name: 'DBSCAN', desc: 'Density-based instead of centroid-based, so it finds irregular cluster shapes and actually flags outliers rather than forcing every point into a group.' },
   ],
   timeseries: [
-    { name: 'LightGBM', desc: 'Same boosting engine again, this time fed lag features and rolling stats instead of raw time. Treats forecasting as a regression problem, which works better than it should.' },
+    { name: 'LightGBM', desc: 'Gradient boosted tree ensemble for regression. Creates lagged features to capture changes in time. Fast and effective, but not good where trend components exist as it only learns a discrete set of values.' },
     { name: 'Triple Exp. Smoothing', desc: 'Classic Holt-Winters: separate smoothing terms for level, trend, and seasonality. No neural net required, and for a lot of seasonal series it’s hard to beat.' },
-    { name: 'GRU (RNN)', desc: 'Recurrent net (PyTorch) over a sliding window. Can pick up longer-range temporal patterns the other two miss, but needs more data to be worth it.' },
+    { name: 'GRU', desc: 'A simple Recurrent Neural Network (RNN) over a sliding window. Can pick up longer-range temporal patterns the other two miss, but needs more data to be worth it.' },
   ],
 }
 
@@ -276,15 +277,15 @@ export function MLPage() {
   const tsTrainSize = Math.floor(historical.length * 0.7)
 
   const stackDesc = tab === 'timeseries'
-    ? 'Python · FastAPI · LightGBM · statsmodels (TES) · PyTorch (GRU) · SQLite'
+    ? 'Python · FastAPI · LightGBM · statsmodels · PyTorch · SQLite'
     : tab === 'regression'
-      ? 'Python · FastAPI · scikit-learn · PyTorch (MLP) · SQLite'
+      ? 'Python · FastAPI · scikit-learn · PyTorch · SQLite'
       : 'Python · FastAPI · scikit-learn · SQLite'
 
   return (
     <PageWrapper>
       <div className="mb-6">
-        <div className="flex items-baseline gap-4 mb-1">
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-1">
           <h1 className="text-2xl font-bold text-purple-light">Machine Learning Playground</h1>
           <GitHubRepoLink repo="chnnxyz/sashar-dev-ml-api" />
         </div>
@@ -357,7 +358,7 @@ export function MLPage() {
                         onClick={() => setSplitSeed(Math.floor(Math.random() * 999) + 1)}
                         title="Random split seed"
                         aria-label="Random split seed"
-                        className="p-1.5 rounded-sm text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40"
+                        className={['p-1.5 rounded-sm text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40', focusRing].join(' ')}
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.8}>
                           <path d="M1 8A7 7 0 1 1 8 15" strokeLinecap="round"/>
@@ -425,8 +426,8 @@ export function MLPage() {
                 <p className="text-xs text-rose-400">{runError}</p>
               </div>
             )}
-            <p className="text-[10px] text-text-muted/60">
-              Or let Optimize search parameters for you
+            <p className="text-[10px] text-text-muted/80">
+              Or find the best hyperparameters algorithmically
             </p>
             <OptimizePanel
               hyperparamDefs={currentDefs}

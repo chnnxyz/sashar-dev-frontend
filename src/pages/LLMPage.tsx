@@ -108,7 +108,7 @@ function TransformerSVG() {
 
   return (
     <div className="flex flex-col items-center gap-2 py-2">
-      <p className="text-xs text-text-muted/60 font-mono animate-pulse">Processing tokens…</p>
+      <p className="text-xs text-text-muted/80 font-mono animate-pulse">Processing tokens…</p>
       <svg viewBox="0 0 782 100" className="w-full">
         <defs>
           <style>{`
@@ -302,7 +302,7 @@ function TokenChip({ text, color, id }: { text: string; color: string; id?: numb
         {text}
       </span>
       {id !== undefined && (
-        <span className="text-[10px] text-text-muted/50 font-mono">{id}</span>
+        <span className="text-[10px] text-text-muted/80 font-mono">{id}</span>
       )}
     </div>
   )
@@ -320,7 +320,7 @@ function BackLink({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="text-[10px] text-text-muted/40 hover:text-purple-light transition-colors cursor-pointer mb-3 flex items-center gap-1"
+      className="text-[10px] text-text-muted/80 hover:text-purple-light transition-colors cursor-pointer mb-3 flex items-center gap-1 rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple/50"
     >
       <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
         <path d="M8 2L4 6l4 4" />
@@ -345,7 +345,7 @@ function StepHeading({ n, label }: { n: number; label: string }) {
 
 function ClusterSummary({ result, loading }: { result: ClusterResult | null; loading: boolean }) {
   if (loading) {
-    return <p className="text-xs text-text-muted/60 mt-3">Grouping tokens with k-means…</p>
+    return <p className="text-xs text-text-muted/80 mt-3">Grouping tokens with k-means…</p>
   }
   if (!result || result.groups.length === 0) return null
   return (
@@ -356,17 +356,17 @@ function ClusterSummary({ result, loading }: { result: ClusterResult | null; loa
         {result.groups.map(g => (
           <li key={g.id}>
             <span className="font-medium" style={{ color: clusterBaseColor(g.id) }}>Group {g.id}</span> contains {g.description}
-            <span className="text-text-muted/50"> — {[...new Set(g.tokens.map(t => t.trim() || t))].join(', ')}</span>
+            <span className="text-text-muted/80"> — {[...new Set(g.tokens.map(t => t.trim() || t))].join(', ')}</span>
           </li>
         ))}
       </ul>
-      <p className="mt-2.5 pt-2 border-t border-border-subtle/60 text-[10px] leading-snug text-text-muted/50 italic">
+      <p className="mt-2.5 pt-2 border-t border-border-subtle/60 text-[10px] leading-snug text-text-muted/80 italic">
         Heads up: labels come from spaCy part-of-speech tags and WordNet where possible, falling back
-        to a tiny 0.5B-parameter model (Qwen2.5-0.5B, 4-bit, on CPU) — so they are rough approximations
+        to a tiny 0.5B-parameter model (Qwen2.5-0.5B CPU). They are rough approximations
         and can be inaccurate. The groups themselves are clustered on the 2D PCA projection of Qwen's
         896-dimensional token embeddings; reducing 896 dimensions to 2 discards most of the information,
-        so the groupings are noisy and shouldn't be read as ground truth. (The full embeddings don't
-        separate fine categories like fruit vs animal either — that's a limit of a model this small.)
+        so the groupings are noisy and shouldn't be read as ground truth. (Due to the model size,
+        semantic relations are not commonly captured on the embeddings).
       </p>
     </Card>
   )
@@ -519,7 +519,7 @@ export function LLMPage() {
     <PageWrapper>
       {/* Header */}
       <div className="mb-6">
-        <div className="flex items-baseline gap-4 mb-1">
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-1">
           <h1 className="text-2xl font-bold text-purple-light">LLMs Explained</h1>
           <GitHubRepoLink repo="chnnxyz/sashar-dev-llm-api" />
         </div>
@@ -533,7 +533,7 @@ export function LLMPage() {
           <a href="https://github.com/explosion/spaCy" target="_blank" rel="noopener noreferrer" className="text-purple-light hover:underline">spaCy</a>,
           {' '}while encoding, embedding and generation run{' '}
           <a href="https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct" target="_blank" rel="noopener noreferrer" className="text-purple-light hover:underline">Qwen2.5-0.5B-Instruct</a>
-          {' '}— a small instruction-tuned model — locally on CPU via the{' '}
+          {' '}(a small instruction-tuned model running on local CPU) via the{' '}
           <a href="https://github.com/abetlen/llama-cpp-python" target="_blank" rel="noopener noreferrer" className="text-purple-light hover:underline">llama-cpp-python</a> bindings for llama.cpp.
         </p>
       </div>
@@ -556,7 +556,7 @@ export function LLMPage() {
               onChange={e => setPrompt(e.target.value)}
               placeholder="Enter a prompt…"
               rows={3}
-              className="w-full bg-bg-base/80 border border-border-subtle rounded-sm px-3 py-2 text-sm text-text-body placeholder:text-text-muted/50 focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition resize-none mb-2 shadow-inset-field"
+              className="w-full bg-bg-base/80 border border-border-subtle rounded-sm px-3 py-2 text-sm text-text-body placeholder:text-text-muted/80 focus:outline-none focus:border-purple/60 focus:ring-1 focus:ring-purple/20 transition resize-none mb-2 shadow-inset-field"
               onKeyDown={e => { if (e.key === 'Enter' && e.metaKey && prompt.trim()) handleTokenize() }}
             />
             <p className="flex items-center gap-1 text-[10px] text-amber-400 mb-3">
@@ -584,7 +584,7 @@ export function LLMPage() {
                 <TokenChip key={i} text={t} color={tokenColors[i]!} />
               ))}
             </div>
-            <p className="text-[10px] text-text-muted/60 leading-relaxed mb-6">
+            <p className="text-[10px] text-text-muted/80 leading-relaxed mb-6">
               The trailing <span className="font-mono text-text-muted">&lt;|im_end|&gt;</span> is a special control token from Qwen's ChatML format — it marks the end of a message turn. The model is trained to stop and hand back to the assistant when it sees it, which is what makes it answer your input rather than continue the sentence.
             </p>
 
@@ -635,7 +635,7 @@ export function LLMPage() {
             {/* Output from step 3 */}
             {embedPoints.length > 0 && (
               <div className="mb-6">
-                <p className="text-xs text-text-muted/60 font-medium mb-2">Token Embedding Space (2D PCA)</p>
+                <p className="text-xs text-text-muted/80 font-medium mb-2">Token Embedding Space (2D PCA)</p>
                 <EmbedPlot points={embedPoints} />
                 <ClusterSummary result={inputClusters} loading={inputClusterLoading} />
               </div>
@@ -668,7 +668,7 @@ export function LLMPage() {
             {step === 'output' && (
               <div ref={outputRef} className="mt-6">
                 <SectionDivider />
-                <p className="text-xs text-text-muted/60 font-medium mb-3">Generated Output</p>
+                <p className="text-xs text-text-muted/80 font-medium mb-3">Generated Output</p>
                 <div className="flex flex-wrap gap-1.5 mb-6">
                   {outputTokens.map((t, i) => (
                     <TokenChip key={i} text={t.text} color={t.color} id={t.id} />
@@ -676,7 +676,7 @@ export function LLMPage() {
                 </div>
                 {outputPoints.length > 0 && (
                   <div className="mb-6">
-                    <p className="text-xs text-text-muted/60 font-medium mb-2">Output Token Embedding Space (2D PCA)</p>
+                    <p className="text-xs text-text-muted/80 font-medium mb-2">Output Token Embedding Space (2D PCA)</p>
                     <EmbedPlot points={outputPoints} />
                     <ClusterSummary result={outputClusters} loading={outputClusterLoading} />
                   </div>

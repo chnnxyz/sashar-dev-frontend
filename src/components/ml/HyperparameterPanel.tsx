@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { NumberInput } from '../shared/NumberInput'
+import { focusRing } from '../shared/focusRing'
 import type { HyperparameterDef, HyperparameterValues } from '../../types'
 
 interface HyperparameterPanelProps {
@@ -12,6 +13,7 @@ interface HyperparameterPanelProps {
 }
 
 function isInvalid(def: HyperparameterDef, val: number): boolean {
+  if (def.isValid) return !def.isValid(val)
   return (def.min !== undefined && val < def.min) || (def.max !== undefined && val > def.max)
 }
 
@@ -38,7 +40,7 @@ export function HyperparameterPanel({ defs, values, onChange, seed, onSeedChange
             onClick={() => onSeedChange(Math.floor(Math.random() * 999) + 1)}
             title="Random seed"
             aria-label="Random seed"
-            className="p-1 rounded-sm text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40"
+            className={['p-1 rounded-sm text-text-muted hover:text-purple-light transition-colors cursor-pointer border border-border-subtle hover:border-purple/40', focusRing].join(' ')}
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={1.8}>
               <path d="M1 8A7 7 0 1 1 8 15" strokeLinecap="round"/>

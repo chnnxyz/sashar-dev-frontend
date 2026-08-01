@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '../shared/Button'
 import { Card } from '../shared/Card'
+import { focusRing } from '../shared/focusRing'
 import { backendApi } from '../../api/api'
 import { restEndpoints } from '../../data/mockData'
 import type { EndpointParam, RESTEndpointDef } from '../../types'
@@ -82,7 +83,7 @@ function EndpointCard({ endpoint }: { endpoint: RESTEndpointDef }) {
       <button
         onClick={() => setExpanded(v => !v)}
         aria-expanded={expanded}
-        className="w-full flex items-center gap-3 px-4 py-2 hover:bg-bg-surface/50 transition-colors text-left cursor-pointer"
+        className={['w-full flex items-center gap-3 px-4 py-2 hover:bg-bg-surface/50 transition-colors text-left cursor-pointer', focusRing].join(' ')}
       >
         <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded-sm border ${METHOD_COLORS[endpoint.method]}`}>
           {endpoint.method}
@@ -127,7 +128,7 @@ function EndpointCard({ endpoint }: { endpoint: RESTEndpointDef }) {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-text-muted font-medium uppercase tracking-wide">Response</span>
-                <button onClick={() => setResponse(null)} className="text-xs text-text-muted hover:text-text-body cursor-pointer">Clear</button>
+                <button onClick={() => setResponse(null)} className={['text-xs text-text-muted hover:text-text-body cursor-pointer', focusRing].join(' ')}>Clear</button>
               </div>
               <pre className="bg-bg-base rounded-sm p-3 text-xs font-mono text-emerald-400 overflow-auto max-h-60 border border-border-subtle leading-relaxed">
                 {response}

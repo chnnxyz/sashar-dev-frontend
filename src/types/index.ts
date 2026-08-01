@@ -34,6 +34,10 @@ export interface HyperparameterDef {
   min?: number
   max?: number
   step?: number
+  /** Overrides min/max for manual-value validation when a field's valid domain
+   * isn't a plain range — e.g. LightGBM's max_depth, which allows -1 (no limit)
+   * or any positive integer, but not 0 or other negatives. */
+  isValid?: (value: number) => boolean
 }
 
 export interface HyperparameterValues {

@@ -14,7 +14,7 @@ export function GitHubRepoLink({ repo }: GitHubRepoLinkProps) {
       href={`https://github.com/${repo}`}
       target="_blank"
       rel="noreferrer"
-      className="text-glow-hover inline-flex items-center gap-1.5 text-xs font-mono lowercase text-text-muted/60 hover:text-purple-light transition-colors duration-200"
+      className="text-glow-hover inline-flex items-center gap-1.5 text-xs font-mono lowercase text-text-muted/80 hover:text-purple-light transition-colors duration-200"
     >
       {GH_ICON}
       {repo}

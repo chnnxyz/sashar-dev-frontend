@@ -8,15 +8,12 @@ Personal portfolio and interactive playground built with React, TypeScript, Vite
 
 **CV** — Full curriculum vitae in a two-column layout covering experience, education, publications, certifications, and languages.
 
-**ML Playground** — Interactive machine learning explorer with D3 scatter plots, model selection, and hyperparameter inputs for regression (ElasticNet, LightGBM, NN), classification (Logistic Regression, SVM, LightGBM), and clustering (K-Means, DBSCAN). Includes a parameter optimization panel supporting Grid Search, Tree Parzen (TPE), and Genetic Algorithm.
-
-**Time Series Playground** — Forecasting interface with a D3 line chart showing historical data and projections. Supports XGBoost, Croston, and RNN models with the same optimization panel.
+**ML Playground** — Interactive machine learning explorer with D3 scatter plots, model selection, and hyperparameter inputs for regression, classification, time series forecasting, and clustering. Includes a hyperparameter optimization panel supporting Grid Search, Tree Parzen (TPE), and Genetic Algorithm.
 
 **Backend Playground** — API explorer with a GraphQL tab (editable query editor with mock responses) and a REST tab (expandable endpoint cards for all available routes).
 
-## Development
+**LLM Playground** — A step-by-step explanation of how modern transformer-based large language models work.
 
-```bash
-npm install
-npm run dev
-```
+## Disclaimer
+
+I am **by no means** a frontend engineer. The code in this repository was mostly generated through Claude Code and Impeccable.

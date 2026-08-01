@@ -16,7 +16,7 @@ function DocEntry({ doc, onUse, panelOpen }: DocEntryProps) {
         onClick={() => setOpen(v => !v)}
         tabIndex={panelOpen ? undefined : -1}
         aria-expanded={open}
-        className="w-full flex items-center gap-2 text-left cursor-pointer group"
+        className="w-full flex items-center gap-2 text-left cursor-pointer group rounded-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-purple/50"
       >
         <span className="text-xs font-mono font-semibold text-purple-light group-hover:text-purple transition-colors">{doc.name}</span>
         <svg className={`ml-auto w-3 h-3 text-text-muted shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -36,7 +36,7 @@ function DocEntry({ doc, onUse, panelOpen }: DocEntryProps) {
                     <span className="text-[10px] font-mono font-semibold text-purple-light">{arg.name}</span>
                     <span className="text-[10px] font-mono text-text-muted bg-bg-surface px-1.5 py-0.5 rounded-sm">{arg.type}</span>
                     {!arg.required && (
-                      <span className="text-[10px] text-text-muted/60 uppercase tracking-wide">optional</span>
+                      <span className="text-[10px] text-text-muted/80 uppercase tracking-wide">optional</span>
                     )}
                   </div>
                   {arg.description && (

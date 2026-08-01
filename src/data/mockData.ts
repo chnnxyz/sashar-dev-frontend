@@ -255,6 +255,15 @@ export function generateTestPredictions(
 
 // ─── Hyperparameter definitions ───────────────────────────────────────────────
 
+// LightGBM's max_depth only accepts -1 (no limit) or a positive integer — never 0,
+// never other negatives, never a float. min/max alone can't express that disjoint
+// domain (a min of -1 would let 0 through), so it also carries a custom validator.
+// The 1-20 range still bounds the Optimize panel's search sweep to sensible depths.
+const LGBM_MAX_DEPTH: HyperparameterDef = {
+  name: 'max_depth', label: 'Max Depth', defaultValue: -1, min: 1, max: 20, step: 1,
+  isValid: v => v === -1 || (Number.isInteger(v) && v >= 1),
+}
+
 export const regressionHyperparams: Record<RegressionModel, HyperparameterDef[]> = {
   elasticnet: [
     { name: 'alpha', label: 'Alpha', defaultValue: 1.0, min: 0, step: 0.01 },
@@ -266,7 +275,7 @@ export const regressionHyperparams: Record<RegressionModel, HyperparameterDef[]>
     { name: 'n_estimators', label: 'N Estimators', defaultValue: 100, min: 10, step: 10 },
     { name: 'learning_rate', label: 'Learning Rate', defaultValue: 0.1, min: 0.001, max: 1, step: 0.001 },
     { name: 'num_leaves', label: 'Num Leaves', defaultValue: 31, min: 2, step: 1 },
-    { name: 'max_depth', label: 'Max Depth', defaultValue: -1, step: 1 },
+    LGBM_MAX_DEPTH,
     { name: 'min_child_samples', label: 'Min Child Samples', defaultValue: 20, min: 1, step: 1 },
   ],
   mlp: [
@@ -294,7 +303,7 @@ export const classificationHyperparams: Record<ClassificationModel, Hyperparamet
     { name: 'n_estimators', label: 'N Estimators', defaultValue: 100, min: 10, step: 10 },
     { name: 'learning_rate', label: 'Learning Rate', defaultValue: 0.1, min: 0.001, max: 1, step: 0.001 },
     { name: 'num_leaves', label: 'Num Leaves', defaultValue: 31, min: 2, step: 1 },
-    { name: 'max_depth', label: 'Max Depth', defaultValue: -1, step: 1 },
+    LGBM_MAX_DEPTH,
   ],
 }
 
@@ -317,7 +326,7 @@ export const tsHyperparams: Record<TSModel, HyperparameterDef[]> = {
     { name: 'n_estimators', label: 'N Estimators', defaultValue: 100, min: 10, step: 10 },
     { name: 'learning_rate', label: 'Learning Rate', defaultValue: 0.1, min: 0.001, max: 1, step: 0.001 },
     { name: 'num_leaves', label: 'Num Leaves', defaultValue: 31, min: 2, step: 1 },
-    { name: 'max_depth', label: 'Max Depth', defaultValue: -1, step: 1 },
+    LGBM_MAX_DEPTH,
     { name: 'min_child_samples', label: 'Min Child Samples', defaultValue: 20, min: 1, step: 1 },
   ],
   tes: [

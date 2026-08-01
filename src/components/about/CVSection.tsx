@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { Card } from '../shared/Card'
+import { focusRing } from '../shared/focusRing'
 
 // Real years of professional experience per domain, not a fabricated score.
 const SKILLS = [
@@ -38,6 +39,7 @@ const experience: CVEntry[] = [
     period: '2025 – Present',
     bullets: [
       'Leading automation of behavior-based promotions using traditional ML and deep reinforcement learning across Udemy\'s global user base.',
+      'Leading a project for generating embeddings based on user behavior data.',
       'Building personalized recommendation systems for email and push notification channels; designing and running A/B experiments across recommendation strategies.',
       'Contributing to the microservices migration of the recommendations infrastructure.',
     ],
@@ -47,7 +49,7 @@ const experience: CVEntry[] = [
     org: 'Sistemas Agaricus · Mexico',
     period: '2025 – Present',
     bullets: [
-      'Defined system architecture for multiple web and mobile products from the ground up.',
+      'Defined system architecture for multiple applications from the ground up.',
       'Built a Go + gRPC microservice backend for a local eTicketing platform and an Elixir microservice backend for a fintech application.',
       'Delivered a .NET web application for automated invoice processing and accounting workflows.',
     ],
@@ -57,9 +59,9 @@ const experience: CVEntry[] = [
     org: 'Valiot · Mexico',
     period: '2023 – 2025',
     bullets: [
-      'Directed data science teams through the full product lifecycle: PoC, proof of value, development, and deployment in industrial IoT contexts.',
+      'Directed data science teams through the full product lifecycle: design, PoC, PoV, development, and deployment in industrial IoT contexts.',
       'Designed and built an LLM-powered chatbot enabling natural-language interaction with industrial software.',
-      'Developed internal Python libraries for NN architecture optimization (NEAT, Tabu Search), metaheuristic algorithms (GA, SA, PSO), fuzzy logic, and anomaly/outlier detection; created ML bindings for the Elixir backend.',
+      'Developed internal Python libraries for NN architecture optimization (NEAT, Tabu Search), metaheuristic algorithms (GA, SA, PSO), fuzzy logic, and anomaly/outlier detection. Created ML bindings for Elixir.',
     ],
   },
   {
@@ -108,7 +110,7 @@ const education: CVEntry[] = [
     period: '2025',
     bullets: [
       'Quantitative focus: financial risk models, statistical inference, and stochastic processes.',
-      <>Thesis (Special Mention): <em>An Automated System for Time Series Prediction Applied to Stock Market Prices and Returns.</em> <a href="/docs/sasha-ruiz-de-aguirre-thesis.pdf" download className="text-purple-light hover:text-purple-light/70 transition-colors duration-150 whitespace-nowrap">[PDF]</a></>,
+      <>Thesis (Special Mention): <em>An Automated System for Time Series Prediction Applied to Stock Market Prices and Returns.</em> <a href="/docs/sasha-ruiz-de-aguirre-thesis.pdf" download className={['text-purple-light hover:text-purple-light/70 transition-colors duration-150 whitespace-nowrap', focusRing].join(' ')}>[PDF]</a></>,
     ],
   },
   {
@@ -272,7 +274,7 @@ export function CVSection() {
             {publications.map(p => (
               <div key={p.title} className="text-xs">
                 {p.href ? (
-                  <a href={p.href} target="_blank" rel="noreferrer" className="text-text-body font-medium leading-relaxed hover:text-purple-light transition-colors duration-150">
+                  <a href={p.href} target="_blank" rel="noreferrer" className={['text-text-body font-medium leading-relaxed hover:text-purple-light transition-colors duration-150', focusRing].join(' ')}>
                     <em>{p.title}</em>
                   </a>
                 ) : (

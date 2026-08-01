@@ -1,5 +1,6 @@
 import { CVSection } from '../components/about/CVSection'
 import { PageWrapper } from '../components/layout/PageWrapper'
+import { focusRing } from '../components/shared/focusRing'
 
 // The browser's default print pagination breaks the CV across arbitrary Letter-sized
 // pages. Sizing a single @page box to the actual rendered content (plus a small buffer
@@ -32,13 +33,13 @@ export function CVPage() {
         <div className="min-w-0">
           <h1 className="text-2xl font-bold text-purple-light">Sasha Ruiz de Aguirre</h1>
           <p className="text-sm text-text-muted mt-1">
-            <a href="mailto:s@chnn.xyz" className="hover:text-purple-light transition-colors duration-150">s@chnn.xyz</a> · <a href="https://linkedin.com/in/sruizdea" target="_blank" rel="noreferrer" className="hover:text-purple-light transition-colors duration-150">linkedin.com/in/sruizdea</a> · <a href="https://github.com/chnnxyz" target="_blank" rel="noreferrer" className="hover:text-purple-light transition-colors duration-150">github.com/chnnxyz</a> · <a href="https://wa.me/523314437948" target="_blank" rel="noreferrer" className="hover:text-purple-light transition-colors duration-150">+52 (331) 443 7948</a>
+            <a href="mailto:s@chnn.xyz" className={['hover:text-purple-light transition-colors duration-150', focusRing].join(' ')}>s@chnn.xyz</a> · <a href="https://linkedin.com/in/sruizdea" target="_blank" rel="noreferrer" className={['hover:text-purple-light transition-colors duration-150', focusRing].join(' ')}>linkedin.com/in/sruizdea</a> · <a href="https://github.com/chnnxyz" target="_blank" rel="noreferrer" className={['hover:text-purple-light transition-colors duration-150', focusRing].join(' ')}>github.com/chnnxyz</a> · <a href="https://wa.me/523314437948" target="_blank" rel="noreferrer" className={['hover:text-purple-light transition-colors duration-150', focusRing].join(' ')}>+52 (331) 443 7948</a>
           </p>
         </div>
         <button
           type="button"
           onClick={downloadAsPdf}
-          className="no-print shrink-0 font-mono text-[10px] text-text-muted border border-border-subtle px-3 py-1.5 hover:text-purple-light hover:border-purple-light/50 transition-colors duration-150"
+          className={['no-print shrink-0 font-mono text-[10px] text-text-muted border border-border-subtle px-3 py-1.5 hover:text-purple-light hover:border-purple-light/50 transition-colors duration-150', focusRing].join(' ')}
         >
           ↓ PDF
         </button>

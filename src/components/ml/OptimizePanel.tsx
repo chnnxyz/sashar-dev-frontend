@@ -3,6 +3,7 @@ import { Button } from '../shared/Button'
 import { Card } from '../shared/Card'
 import { NumberInput } from '../shared/NumberInput'
 import { SubNavTabs } from '../shared/SubNavTabs'
+import { focusRing } from '../shared/focusRing'
 import { OptimizationProgress } from '../shared/OptimizationProgress'
 import { simulateOptimizationStream } from '../../data/mockData'
 import { openOptimizeStream } from '../../api/api'
@@ -28,6 +29,24 @@ const methodTabs = [
   { value: 'tpe' as OptimizeMethod, label: 'Tree Parzen (TPE)' },
   { value: 'genetic' as OptimizeMethod, label: 'Genetic' },
 ]
+
+// Display label only — the streamed value itself is always minimized ("lower is
+// better") regardless of task, so no data/type shape changes needed here, just
+// what we call it on screen. Falls back to RMSE for the client-side simulation
+// (no live task/model), which only ever generates a generic decaying curve.
+const METRIC_LABEL: Record<MLTask | 'timeseries', string> = {
+  regression: 'RMSE',
+  timeseries: 'RMSE',
+  classification: 'Binary Cross-Entropy',
+  clustering: 'Davies-Bouldin Index',
+}
+// Compact form for narrow contexts (the iteration table's column header).
+const METRIC_LABEL_SHORT: Record<MLTask | 'timeseries', string> = {
+  regression: 'RMSE',
+  timeseries: 'RMSE',
+  classification: 'BCE',
+  clustering: 'DB Index',
+}
 
 function defaultBound(def: HyperparameterDef): SearchBound {
   return {
@@ -146,6 +165,8 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
   })
 
   const methodLabel = method === 'gridsearch' ? 'Grid Search' : method === 'tpe' ? 'Tree Parzen (TPE)' : 'Genetic Algorithm'
+  const metricLabel = task ? METRIC_LABEL[task] : METRIC_LABEL.regression
+  const metricLabelShort = task ? METRIC_LABEL_SHORT[task] : METRIC_LABEL_SHORT.regression
 
   return (
     <>
@@ -168,7 +189,7 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
             {/* Header — always visible */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle flex-shrink-0">
               <h3 id="optimize-panel-title" className="font-semibold text-text-body">Optimize Hyperparameters</h3>
-              <button onClick={handleClose} className="text-text-muted hover:text-text-body transition-colors cursor-pointer">
+              <button onClick={handleClose} aria-label="Close optimize panel" className={['text-text-muted hover:text-text-body transition-colors cursor-pointer', focusRing].join(' ')}>
                 <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
                 </svg>
@@ -250,7 +271,7 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
                     </div>
                   </Card>
 
-                  <OptimizationProgress iterations={iterations} streaming={streaming} method={method} error={phase === 'error'} />
+                  <OptimizationProgress iterations={iterations} streaming={streaming} method={method} error={phase === 'error'} metricLabel={metricLabel} metricLabelShort={metricLabelShort} />
 
                   {phase === 'error' && (
                     <div className="bg-rose-950/30 border border-rose-800/40 rounded-sm p-3">
@@ -261,7 +282,7 @@ export function OptimizePanel({ hyperparamDefs, onApply, task, model }: Optimize
                   {phase === 'complete' && best && (
                     <div className="bg-emerald-950/30 border border-emerald-800/40 rounded-sm p-3">
                       <p className="text-[10px] text-emerald-400 font-semibold uppercase tracking-widest mb-2">
-                        Best Parameters — RMSE {best.rmse.toFixed(4)}
+                        Best Parameters — {metricLabel} {best.rmse.toFixed(4)}
                       </p>
                       <div className="flex flex-wrap gap-x-5 gap-y-1">
                         {Object.entries(best.params).map(([k, v]) => (

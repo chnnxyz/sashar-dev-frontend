@@ -4,6 +4,7 @@ import { Card } from '../components/shared/Card'
 import { GraphQLEditor } from '../components/backend/GraphQLEditor'
 import { GQLDocsSidebar } from '../components/backend/GQLDocsSidebar'
 import { RESTExplorer } from '../components/backend/RESTExplorer'
+import { focusRing } from '../components/shared/focusRing'
 import { PageWrapper } from '../components/layout/PageWrapper'
 import { GitHubRepoLink } from '../components/shared/GitHubRepoLink'
 import { defaultGraphQLQuery, REST_PROD_URL, GQL_PROD_URL } from '../data/mockData'
@@ -35,7 +36,7 @@ export function BackendPage() {
         <div className={['transition-[padding] duration-300', sidebarOpen && tab === 'graphql' ? 'lg:pl-72' : ''].join(' ')}>
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <div className="flex items-baseline gap-4 mb-1">
+              <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-1">
                 <h1 className="text-2xl font-bold text-purple-light">Backend Playground</h1>
                 <GitHubRepoLink repo={tab === 'graphql' ? 'chnnxyz/sashar-dev-gql-api' : 'chnnxyz/sashar-dev-rest-api'} />
               </div>
@@ -54,6 +55,7 @@ export function BackendPage() {
                   sidebarOpen
                     ? 'bg-purple/20 border-purple/40 text-purple-light'
                     : 'border-border-subtle text-text-muted hover:text-purple-light hover:border-purple/40',
+                  focusRing,
                 ].join(' ')}
               >
                 <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
