@@ -38,7 +38,7 @@ export function BackendPage() {
             <div className="min-w-0">
               <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-1">
                 <h1 className="text-2xl font-bold text-purple-light">Backend Playground</h1>
-                <GitHubRepoLink repo={tab === 'graphql' ? 'chnnxyz/sashar-dev-gql-api' : 'chnnxyz/sashar-dev-rest-api'} />
+                <GitHubRepoLink repo='chnnxyz/sashar-dev-api-backend'/>
               </div>
               <p className="text-sm text-text-muted">Explore this site via GraphQL queries or REST endpoints backed by a live Go API.</p>
               <p className="text-xs text-text-muted/80 mt-1.5 font-mono">

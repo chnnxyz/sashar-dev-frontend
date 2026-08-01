@@ -521,7 +521,7 @@ export function LLMPage() {
       <div className="mb-6">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-1">
           <h1 className="text-2xl font-bold text-purple-light">LLMs Explained</h1>
-          <GitHubRepoLink repo="chnnxyz/sashar-dev-llm-api" />
+          <GitHubRepoLink repo="chnnxyz/sashar-dev-api-ml" />
         </div>
         <p className="text-sm text-text-muted mb-3">Step through how a large language model processes and generates text.</p>
         <p className="text-xs text-text-muted/80 leading-relaxed">

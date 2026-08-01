@@ -287,7 +287,7 @@ export function MLPage() {
       <div className="mb-6">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-1">
           <h1 className="text-2xl font-bold text-purple-light">Machine Learning Playground</h1>
-          <GitHubRepoLink repo="chnnxyz/sashar-dev-ml-api" />
+          <GitHubRepoLink repo="chnnxyz/sashar-dev-api-ml" />
         </div>
         <p className="text-sm text-text-muted">
           {tab === 'timeseries'
