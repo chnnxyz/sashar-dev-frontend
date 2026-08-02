@@ -5,6 +5,7 @@ import { CVPage } from './pages/CVPage'
 import { MLPage } from './pages/MLPage'
 import { LLMPage } from './pages/LLMPage'
 import { BackendPage } from './pages/BackendPage'
+import { SideProjectsPage } from './pages/SideProjectsPage'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/ml" element={<MLPage />} />
         <Route path="/llms" element={<LLMPage />} />
         <Route path="/backend" element={<BackendPage />} />
+        <Route path="/sideprojects" element={<SideProjectsPage />} />
       </Routes>
     </BrowserRouter>
   )

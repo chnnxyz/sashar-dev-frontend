@@ -8,6 +8,7 @@ const navItems = [
   { path: '/ml', label: 'ML Playground' },
   { path: '/llms', label: 'LLMs' },
   { path: '/backend', label: 'Backend' },
+  { path: '/sideprojects', label: 'Side Projects' },
 ]
 
 export function Navigation() {
